@@ -41,7 +41,10 @@ class AuthService {
   public async logout(userData: User): Promise<User> {
     if (isEmpty(userData)) throw new HttpException(400, "You're not userData");
 
-    const findUser: User = await this.users.findOne({ email: userData.email, password: userData.password });
+    const findUser: User = await this.users.findOne({
+      email: userData.email,
+      password: userData.password,
+    });
     if (!findUser) throw new HttpException(409, `You're email ${userData.email} not found`);
 
     return findUser;
