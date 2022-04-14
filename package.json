@@ -1,9 +1,9 @@
 {
-  "name": "MyRoutes.Back",
-  "version": "0.0.0",
-  "description": "TypeScript + Mongoose + MongoDB + Express API Server",
-  "author": "",
-  "license": "ISC",
+  "name": "myroutes.back",
+  "version": "1.0.0",
+  "description": "This is the API for MyRoutes project.",
+  "author": "Santiago Barquero",
+  "license": "MIT",
   "scripts": {
     "start": "npm run build && cross-env NODE_ENV=production node dist/server.js",
     "dev": "cross-env NODE_ENV=development nodemon",
