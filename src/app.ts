@@ -73,9 +73,9 @@ class App {
     const options = {
       swaggerDefinition: {
         info: {
-          title: 'REST API',
+          title: 'MyRoutes API',
           version: '1.0.0',
-          description: 'Example docs',
+          description: 'MyRoutes RESTful API documentation',
         },
       },
       apis: ['swagger.yaml'],

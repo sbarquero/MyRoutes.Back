@@ -1,6 +1,6 @@
 tags:
-- name: users
-  description: users API
+- name: Users
+  description: Users API
 
 paths:
 # [GET] users
@@ -26,7 +26,7 @@ paths:
         description: user Data
         required: true
         schema:
-          $ref: '#/definitions/users'
+          $ref: '#/definitions/CreateUserDto'
       responses:
         201:
           description: 'Created'
@@ -51,8 +51,10 @@ paths:
       responses:
         200:
           description: 'OK'
-        409:
-          description: 'Conflict'
+        400:
+          description: 'Bad Request'
+        404:
+          description: 'Not Found'
         500:
           description: 'Server Error'
 
@@ -71,14 +73,14 @@ paths:
         description: user Data
         required: true
         schema:
-          $ref: '#/definitions/users'
+          $ref: '#/definitions/UpdateUserDto'
       responses:
         200:
           description: 'OK'
         400:
           description: 'Bad Request'
-        409:
-          description: 'Conflict'
+        404:
+          description: 'Not Found'
         500:
           description: 'Server Error'
 
@@ -95,27 +97,50 @@ paths:
       responses:
         200:
           description: 'OK'
-        409:
-          description: 'Conflict'
+        400:
+          description: 'Bad Request'
+        404:
+          description: 'Not Found'
         500:
           description: 'Server Error'
 
 # definitions
 definitions:
-  users:
+  CreateUserDto:
     type: object
     required:
+        - name
         - email
         - password
     properties:
-      id:
-        description: user Id
+      name:
+        type: string
+        description: user Name
       email:
         type: string
         description: user Email
       password:
         type: string
         description: user Password
+  UpdateUserDto:
+    type: object
+    required:
+    properties:
+      name:
+        type: string
+        description: user Name
+      password:
+        type: string
+        description: user Password
+      rol:
+        type: string
+        description: user Rol
+      active:
+        type: boolean
+        description: user is active
+      google:
+        type: boolean
+        description: user use google authentication
 
 schemes:
  - https
