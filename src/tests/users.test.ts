@@ -2,7 +2,7 @@ import bcrypt from 'bcrypt';
 import mongoose from 'mongoose';
 import request from 'supertest';
 import App from '../app';
-import { CreateUserDto } from '../dtos/users.dto';
+import { CreateUserDto, UpdateUserDto } from '../dtos/users.dto';
 import UsersRoute from '../routes/users.route';
 
 afterAll(async () => {
@@ -11,25 +11,37 @@ afterAll(async () => {
 
 describe('Testing Users', () => {
   describe('[GET] /users', () => {
-    it('response fineAll Users', async () => {
+    it('response findAll Users', async () => {
       const usersRoute = new UsersRoute();
       const users = usersRoute.usersController.userService.users;
 
       users.find = jest.fn().mockReturnValue([
         {
-          _id: 'qpwoeiruty',
+          _id: '62594afa866ac94150a0801d',
+          name: 'user a',
           email: 'a@email.com',
           password: await bcrypt.hash('q1w2e3r4!', 10),
+          rol: 'user',
+          active: true,
+          google: false,
         },
         {
-          _id: 'alskdjfhg',
+          _id: '56594afa866ac94150a0801d',
+          name: 'user b',
           email: 'b@email.com',
           password: await bcrypt.hash('a1s2d3f4!', 10),
+          rol: 'user',
+          active: true,
+          google: false,
         },
         {
-          _id: 'zmxncbv',
+          _id: '78594afa866ac94150a0801d',
+          name: 'user c',
           email: 'c@email.com',
           password: await bcrypt.hash('z1x2c3v4!', 10),
+          rol: 'user',
+          active: true,
+          google: false,
         },
       ]);
 
@@ -41,15 +53,19 @@ describe('Testing Users', () => {
 
   describe('[GET] /users/:id', () => {
     it('response findOne User', async () => {
-      const userId = 'qpwoeiruty';
+      const userId = '62594afa866ac94150a0801d';
 
       const usersRoute = new UsersRoute();
       const users = usersRoute.usersController.userService.users;
 
       users.findOne = jest.fn().mockReturnValue({
-        _id: 'qpwoeiruty',
+        _id: '62594afa866ac94150a0801d',
+        name: 'test name',
         email: 'a@email.com',
         password: await bcrypt.hash('q1w2e3r4!', 10),
+        rol: 'user',
+        active: true,
+        google: false,
       });
 
       (mongoose as any).connect = jest.fn();
@@ -61,6 +77,7 @@ describe('Testing Users', () => {
   describe('[POST] /users', () => {
     it('response Create User', async () => {
       const userData: CreateUserDto = {
+        name: 'test name',
         email: 'test@email.com',
         password: 'q1w2e3r4',
       };
@@ -84,26 +101,22 @@ describe('Testing Users', () => {
   describe('[PUT] /users/:id', () => {
     it('response Update User', async () => {
       const userId = '60706478aad6c9ad19a31c84';
-      const userData: CreateUserDto = {
-        email: 'test@email.com',
+      const userData: UpdateUserDto = {
+        name: 'updated test name',
         password: 'q1w2e3r4',
+        rol: 'admin',
+        active: true,
+        google: false,
       };
 
       const usersRoute = new UsersRoute();
       const users = usersRoute.usersController.userService.users;
 
-      if (userData.email) {
-        users.findOne = jest.fn().mockReturnValue({
-          _id: userId,
-          email: userData.email,
-          password: await bcrypt.hash(userData.password, 10),
-        });
-      }
-
+      users.findById = jest.fn().mockReturnValue({
+        _id: '60706478aad6c9ad19a31c84',
+      });
       users.findByIdAndUpdate = jest.fn().mockReturnValue({
-        _id: userId,
-        email: userData.email,
-        password: await bcrypt.hash(userData.password, 10),
+        message: 'User updated',
       });
 
       (mongoose as any).connect = jest.fn();
@@ -120,9 +133,7 @@ describe('Testing Users', () => {
       const users = usersRoute.usersController.userService.users;
 
       users.findByIdAndDelete = jest.fn().mockReturnValue({
-        _id: '60706478aad6c9ad19a31c84',
-        email: 'test@email.com',
-        password: await bcrypt.hash('q1w2e3r4!', 10),
+        message: 'User deleted',
       });
 
       (mongoose as any).connect = jest.fn();
