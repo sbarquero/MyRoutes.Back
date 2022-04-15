@@ -17,3 +17,8 @@ export const isEmpty = (value: string | number | object): boolean => {
     return false;
   }
 };
+
+export function isValidId(id: string): Boolean {
+  const regExp = new RegExp('^[0-9a-fA-F]{24}$');
+  return regExp.test(id);
+}
