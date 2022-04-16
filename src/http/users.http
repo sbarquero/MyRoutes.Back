@@ -15,6 +15,7 @@ POST {{ baseURL }}/users
 Content-Type: application/json
 
 {
+    "name": "example name",
     "email": "example@email.com",
     "password": "password"
 }
@@ -25,8 +26,11 @@ PUT {{ baseURL }}/users/1
 Content-Type: application/json
 
 {
-    "email": "example@email.com",
-    "password": "password"
+    "name": "modified name",
+    "password": "password",
+    "rol": "user",
+    "active": true,
+    "google": false
 }
 
 ###
