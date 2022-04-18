@@ -3,17 +3,18 @@
 
 ###
 # User Signup
-POST {{ baseURL }}/signup
+POST {{ baseURL }}/auth/signup
 Content-Type: application/json
 
 {
+    "name": "Test name",
     "email": "example@email.com",
     "password": "password"
 }
 
 ###
 # User Login
-POST {{ baseURL }}/login
+POST {{ baseURL }}/auth/login
 Content-Type: application/json
 
 {
@@ -23,7 +24,7 @@ Content-Type: application/json
 
 ###
 # User Logout
-POST {{ baseURL }}/logout
+POST {{ baseURL }}/auth/logout
 Content-Type: application/json
 
 {

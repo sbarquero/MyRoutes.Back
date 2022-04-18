@@ -25,6 +25,7 @@ class UserService {
   public async createUser(userData: CreateUserDto): Promise<User> {
     if (isEmpty(userData)) throw new HttpException(400, 'There are no data');
 
+    userData.email = userData.email.toLowerCase();
     const findUser: User = await this.users.findOne({ email: userData.email });
     if (findUser) throw new HttpException(409, `Email '${userData.email}' already exists`);
 
@@ -34,9 +35,6 @@ class UserService {
     const createUserData: User = await this.users.create({
       ...userData,
       password: hashedPassword,
-      rol: 'user',
-      active: false,
-      google: false,
       createAt: now,
       updateAt: null,
     });

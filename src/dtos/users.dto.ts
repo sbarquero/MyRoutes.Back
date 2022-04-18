@@ -11,6 +11,16 @@ export class CreateUserDto {
   @IsString()
   @MinLength(6)
   public password: string;
+
+  @IsString()
+  @IsIn(['user', 'admin'])
+  public rol: string;
+
+  @IsBoolean()
+  public active: boolean;
+
+  @IsBoolean()
+  public google: boolean;
 }
 
 export class UpdateUserDto {
@@ -33,11 +43,23 @@ export class UpdateUserDto {
   public google: boolean;
 }
 
-export class LoginUserDto {
+export class SignUpUserDto {
+  @IsString()
+  @MinLength(3)
+  public name: string;
+
   @IsEmail()
   public email: string;
 
   @IsString()
   @MinLength(6)
+  public password: string;
+}
+
+export class LoginUserDto {
+  @IsEmail()
+  public email: string;
+
+  @IsString()
   public password: string;
 }
