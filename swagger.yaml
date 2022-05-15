@@ -1,14 +1,54 @@
 tags:
+- name: Auth
+  description: Authorization API endpoints
 - name: Users
-  description: Users API
+  description: Users API endpoints
 
 paths:
+# [POST] auth/login
+  /auth/login:
+    post:
+      tags:
+      - Auth
+      summary: User login
+      parameters:
+      - name: body
+        in: body
+        description: User login
+        required: true
+        schema:
+          $ref: '#/definitions/LoginDto'
+      responses:
+        200:
+          description: 'OK'
+        500:
+          description: 'Server Error'
+
+# [POST] auth/register
+  /auth/register:
+    post:
+      tags:
+      - Auth
+      summary: User registration
+      parameters:
+      - name: body
+        in: body
+        description: Register for a new user
+        required: true
+        schema:
+          $ref: '#/definitions/CreateUserDto'
+      responses:
+        200:
+          description: 'OK'
+        500:
+          description: 'Server Error'
+
 # [GET] users
   /users:
     get:
       tags:
-      - users
-      summary: Find All Users
+      - Users
+      summary: Find all Users
       responses:
         200:
           description: 'OK'
@@ -18,8 +58,8 @@ paths:
 # [POST] users
     post:
       tags:
-      - users
-      summary: Add User
+      - Users
+      summary: Add an User
       parameters:
       - name: body
         in: body
@@ -41,8 +81,8 @@ paths:
   /users/{id}:
     get:
       tags:
-      - users
-      summary: Find User By Id
+      - Users
+      summary: Find an User by Id
       parameters:
       - name: id
         in: path
@@ -61,8 +101,8 @@ paths:
 # [PUT] users/id
     put:
       tags:
-      - users
-      summary: Update User By Id
+      - Users
+      summary: Update an User by Id
       parameters:
       - name: id
         in: path
@@ -87,7 +127,7 @@ paths:
 # [DELETE] users/id
     delete:
       tags:
-      - users
+      - Users
       summary: Delete User By Id
       parameters:
       - name: id
@@ -106,6 +146,18 @@ paths:
 
 # definitions
 definitions:
+  LoginDto:
+    type: object
+    required:
+        - email
+        - password
+    properties:
+      email:
+        type: string
+        description: user Email
+      password:
+        type: string
+        description: user Password
   CreateUserDto:
     type: object
     required:
