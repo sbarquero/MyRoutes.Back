@@ -43,7 +43,7 @@ export class UpdateUserDto {
   public google: boolean;
 }
 
-export class SignUpUserDto {
+export class RegisterUserDto {
   @IsString()
   @MinLength(3)
   public name: string;

@@ -10,7 +10,7 @@ afterAll(async () => {
 });
 
 describe('Testing Auth', () => {
-  describe('[POST] /signup', () => {
+  describe('[POST] /register', () => {
     it('response should have the Create userData', async () => {
       const userData: CreateUserDto = {
         name: 'Test Name',
@@ -30,7 +30,7 @@ describe('Testing Auth', () => {
 
       (mongoose as any).connect = jest.fn();
       const app = new App([authRoute]);
-      return request(app.getServer()).post(`${authRoute.path}signup`).send(userData);
+      return request(app.getServer()).post(`${authRoute.path}register`).send(userData);
     });
   });
 

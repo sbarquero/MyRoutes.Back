@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { LoginUserDto, SignUpUserDto } from '@dtos/users.dto';
+import { LoginUserDto, RegisterUserDto } from '@dtos/users.dto';
 import { RequestWithUser } from '@interfaces/auth.interface';
 import { User } from '@interfaces/users.interface';
 import AuthService from '@services/auth.service';
@@ -7,12 +7,12 @@ import AuthService from '@services/auth.service';
 class AuthController {
   public authService = new AuthService();
 
-  public signUp = async (req: Request, res: Response, next: NextFunction) => {
+  public register = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const userData: SignUpUserDto = req.body;
-      const signUpUserData: User = await this.authService.signup(userData);
+      const userData: RegisterUserDto = req.body;
+      const registerUserData: User = await this.authService.register(userData);
 
-      res.status(201).json(signUpUserData);
+      res.status(201).json(registerUserData);
     } catch (error) {
       next(error);
     }

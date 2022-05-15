@@ -1,7 +1,7 @@
 import { hash, compare } from 'bcrypt';
 import { sign } from 'jsonwebtoken';
 import { SECRET_KEY } from '@config';
-import { LoginUserDto, SignUpUserDto } from '@dtos/users.dto';
+import { LoginUserDto, RegisterUserDto } from '@dtos/users.dto';
 import { HttpException } from '@exceptions/HttpException';
 import { DataStoredInToken } from '@interfaces/auth.interface';
 import { User } from '@interfaces/users.interface';
@@ -11,7 +11,7 @@ import { isEmpty } from '@utils/util';
 class AuthService {
   public users = userModel;
 
-  public async signup(userData: SignUpUserDto): Promise<User> {
+  public async register(userData: RegisterUserDto): Promise<User> {
     if (isEmpty(userData)) throw new HttpException(400, 'There are no data');
 
     userData.email = userData.email.toLowerCase();
