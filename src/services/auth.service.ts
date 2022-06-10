@@ -1,7 +1,7 @@
 import { hash, compare } from 'bcrypt';
 import { sign } from 'jsonwebtoken';
 import { SECRET_KEY } from '@config';
-import { LoginUserDto, RegisterUserDto } from '@dtos/users.dto';
+import { LoginResponseDto, LoginUserDto, RegisterUserDto } from '@dtos/users.dto';
 import { HttpException } from '@exceptions/HttpException';
 import { DataStoredInToken } from '@interfaces/auth.interface';
 import { User } from '@interfaces/users.interface';
@@ -34,18 +34,25 @@ class AuthService {
     return createUserData;
   }
 
-  public async login(userData: LoginUserDto): Promise<{ token: string }> {
+  public async login(userData: LoginUserDto): Promise<LoginResponseDto> {
     if (isEmpty(userData)) throw new HttpException(400, 'There are no data');
 
     const findUser: User = await this.users.findOne({ email: userData.email.toLowerCase() });
     if (!findUser) throw new HttpException(403, `Email ${userData.email} not found`);
+
+    if (!findUser.active) throw new HttpException(401, `Email ${userData.email} not authorized`);
 
     const isPasswordMatching: boolean = await compare(userData.password, findUser.password);
     if (!isPasswordMatching) throw new HttpException(403, 'Wrong password');
 
     const tokenData = this.createToken(findUser);
 
-    return { token: tokenData };
+    return {
+      userName: findUser.name,
+      rol: findUser.rol,
+      token: tokenData,
+      refreshToken: 'not-implemented-yet',
+    };
   }
 
   public async logout(userData: User): Promise<User> {

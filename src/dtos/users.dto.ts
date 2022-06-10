@@ -63,3 +63,10 @@ export class LoginUserDto {
   @IsString()
   public password: string;
 }
+
+export class LoginResponseDto {
+  public userName: string;
+  public rol: string;
+  public token: string;
+  public refreshToken: string;
+}
