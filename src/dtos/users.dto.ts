@@ -1,3 +1,4 @@
+import { RefreshToken } from '@/interfaces/refreshToken.interface';
 import { IsBoolean, IsEmail, IsIn, IsString, MinLength } from 'class-validator';
 
 export class CreateUserDto {
@@ -68,5 +69,7 @@ export class LoginResponseDto {
   public userName: string;
   public rol: string;
   public token: string;
+  public session: string;
   public refreshToken: string;
+  public expireAt: Date;
 }

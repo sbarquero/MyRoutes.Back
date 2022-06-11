@@ -1,3 +1,5 @@
+import { RefreshToken } from './refreshToken.interface';
+
 export interface User {
   _id: string;
   name: string;
@@ -5,7 +7,7 @@ export interface User {
   password: string;
   rol: string;
   active: boolean;
-  google: boolean;
+  refreshTokens: [RefreshToken];
   createAt: Date;
   updateAt: Date;
 }

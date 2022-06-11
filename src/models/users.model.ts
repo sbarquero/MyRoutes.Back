@@ -24,10 +24,25 @@ const userSchema: Schema = new Schema({
     required: true,
     default: true,
   },
-  google: {
-    type: Boolean,
+  refreshTokens: {
+    type: [
+      {
+        session: {
+          type: String,
+          required: true,
+        },
+        token: {
+          type: String,
+          required: true,
+        },
+        expireAt: {
+          type: Date,
+          required: true,
+        },
+      },
+    ],
     required: true,
-    default: false,
+    default: [],
   },
   createAt: {
     type: Date,
