@@ -1,13 +1,13 @@
 import { hash, compare } from 'bcrypt';
 import { sign } from 'jsonwebtoken';
 import { SECRET_KEY, TOKEN_DURATION, REFRESH_TOKEN_DURATION } from '@config';
-import { LoginResponseDto, LoginUserDto, RegisterUserDto } from '@dtos/users.dto';
+import { LoginResponseDto, LoginUserDto, LogoutSessionDto, RegisterUserDto } from '@dtos/users.dto';
 import { HttpException } from '@exceptions/HttpException';
 import { DataStoredInToken } from '@interfaces/auth.interface';
 import { User } from '@interfaces/users.interface';
 import userModel from '@models/users.model';
 import { isEmpty } from '@utils/util';
-import { RefreshToken } from '@/interfaces/refreshToken.interface';
+import { Session } from '@/interfaces/auth.interface';
 import { randomUUID } from 'crypto';
 
 class AuthService {
@@ -39,7 +39,7 @@ class AuthService {
   public async login(userData: LoginUserDto): Promise<LoginResponseDto> {
     if (isEmpty(userData)) throw new HttpException(400, 'There are no data');
 
-    const findUser: User = await this.users.findOne({ email: userData.email.toLowerCase() });
+    const findUser = await this.users.findOne({ email: userData.email.toLowerCase() });
     if (!findUser) throw new HttpException(403, `Email ${userData.email} not found`);
 
     if (!findUser.active) throw new HttpException(401, `Email ${userData.email} not authorized`);
@@ -48,33 +48,40 @@ class AuthService {
     if (!isPasswordMatching) throw new HttpException(403, 'Wrong password');
 
     const tokenData = this.createToken(findUser);
-    const newRefreshToken = this.createRefreshToken();
+    const refreshToken = this.createSession();
 
-    findUser.refreshTokens.push(newRefreshToken);
+    findUser.sessions.push(refreshToken);
 
-    await this.users.findByIdAndUpdate(findUser._id, findUser);
+    const updatedUser = await findUser.save();
+
+    const sessionId: number = updatedUser.sessions[updatedUser.sessions.length - 1]._id;
 
     const response: LoginResponseDto = {
+      userId: findUser._id,
       userName: findUser.name,
       rol: findUser.rol,
       token: tokenData,
-      session: newRefreshToken.session,
-      refreshToken: newRefreshToken.token,
-      expireAt: newRefreshToken.expireAt,
+      sessionId,
+      refreshToken: refreshToken.refreshToken,
+      expireAt: refreshToken.expireAt,
     };
     return response;
   }
 
-  public async logout(userData: User): Promise<User> {
-    if (isEmpty(userData)) throw new HttpException(400, "You're not userData");
+  public async logout(logoutRequest: LogoutSessionDto): Promise<Session> {
+    if (isEmpty(logoutRequest)) throw new HttpException(400, 'There are not LogoutRequest');
 
-    const findUser: User = await this.users.findOne({
-      email: userData.email,
-      password: userData.password,
-    });
-    if (!findUser) throw new HttpException(409, `You're email ${userData.email} not found`);
+    const { userId, sessionId } = logoutRequest;
+    const findUser = await this.users.findById(userId);
+    if (!findUser) throw new HttpException(404, `UserId '${userId}' not found`);
 
-    return findUser;
+    const index = findUser.sessions.findIndex(x => x._id == sessionId);
+    if (index === -1) throw new HttpException(404, `SessionId '${userId}' not found`);
+
+    const closedSession = findUser.sessions.splice(index, 1)[0];
+    await findUser.save();
+
+    return closedSession;
   }
 
   private createToken(user: User): string {
@@ -90,11 +97,11 @@ class AuthService {
     return sign(dataStoredInToken, secretKey, { expiresIn });
   }
 
-  private createRefreshToken(): RefreshToken {
-    const session = randomUUID();
-    const token = randomUUID();
+  private createSession(): Session {
+    const refreshToken = randomUUID();
+    const createAt = new Date(Date.now());
     const expireAt = new Date(Date.now() + parseInt(REFRESH_TOKEN_DURATION) * 60 * 1000);
-    return { session, token, expireAt };
+    return { refreshToken, createAt, expireAt };
   }
 }
 

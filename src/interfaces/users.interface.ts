@@ -1,4 +1,4 @@
-import { RefreshToken } from './refreshToken.interface';
+import { Session } from './auth.interface';
 
 export interface User {
   _id: string;
@@ -7,7 +7,7 @@ export interface User {
   password: string;
   rol: string;
   active: boolean;
-  refreshTokens: [RefreshToken];
+  sessions: [Session];
   createAt: Date;
   updateAt: Date;
 }

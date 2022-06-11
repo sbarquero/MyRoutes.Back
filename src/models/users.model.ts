@@ -24,15 +24,15 @@ const userSchema: Schema = new Schema({
     required: true,
     default: true,
   },
-  refreshTokens: {
+  sessions: {
     type: [
       {
-        session: {
+        refreshToken: {
           type: String,
           required: true,
         },
-        token: {
-          type: String,
+        createAt: {
+          type: Date,
           required: true,
         },
         expireAt: {

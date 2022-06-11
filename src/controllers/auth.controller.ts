@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { LoginUserDto, RegisterUserDto } from '@dtos/users.dto';
-import { RequestWithUser } from '@interfaces/auth.interface';
+import { LoginUserDto, LogoutSessionDto, RegisterUserDto } from '@dtos/users.dto';
 import { User } from '@interfaces/users.interface';
 import AuthService from '@services/auth.service';
 
@@ -29,13 +28,12 @@ class AuthController {
     }
   };
 
-  public logOut = async (req: RequestWithUser, res: Response, next: NextFunction) => {
+  public logOut = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const userData: User = req.user;
-      const logOutUserData: User = await this.authService.logout(userData);
+      const logoutData: LogoutSessionDto = req.body;
+      const logoutResponse = await this.authService.logout(logoutData);
 
-      res.setHeader('Set-Cookie', ['Authorization=; Max-age=0']);
-      res.status(200).json({ data: logOutUserData, message: 'logout' });
+      res.status(200).json({ data: logoutResponse, message: 'Session closed' });
     } catch (error) {
       next(error);
     }

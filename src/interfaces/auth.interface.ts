@@ -1,6 +1,3 @@
-import { Request } from 'express';
-import { User } from '@interfaces/users.interface';
-
 export interface DataStoredInToken {
   id: string;
   name: string;
@@ -8,6 +5,9 @@ export interface DataStoredInToken {
   rol: string;
 }
 
-export interface RequestWithUser extends Request {
-  user: User;
+export interface Session {
+  _id?: number;
+  refreshToken: string;
+  createAt: Date;
+  expireAt: Date;
 }
