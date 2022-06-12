@@ -54,7 +54,7 @@ class AuthService {
 
     const updatedUser = await findUser.save();
 
-    const sessionId: number = updatedUser.sessions[updatedUser.sessions.length - 1]._id;
+    const sessionId: string = updatedUser.sessions[updatedUser.sessions.length - 1]._id;
 
     const response: LoginResponseDto = {
       userId: findUser._id,
@@ -71,12 +71,15 @@ class AuthService {
   public async logout(logoutRequest: LogoutSessionDto): Promise<Session> {
     if (isEmpty(logoutRequest)) throw new HttpException(400, 'There are not LogoutRequest');
 
-    const { userId, sessionId } = logoutRequest;
+    const { userId, sessionId, refreshToken } = logoutRequest;
     const findUser = await this.users.findById(userId);
     if (!findUser) throw new HttpException(404, `UserId '${userId}' not found`);
 
-    const index = findUser.sessions.findIndex(x => x._id == sessionId);
-    if (index === -1) throw new HttpException(404, `SessionId '${userId}' not found`);
+    const index = findUser.sessions.findIndex(session => session._id == sessionId);
+    if (index === -1) throw new HttpException(404, `SessionId '${sessionId}' not found`);
+
+    if (refreshToken !== findUser.sessions[index].refreshToken)
+      throw new HttpException(403, 'Session could not to be closed due incorrect refreshToken');
 
     const closedSession = findUser.sessions.splice(index, 1)[0];
     await findUser.save();

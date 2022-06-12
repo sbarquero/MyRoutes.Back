@@ -6,7 +6,7 @@ export interface DataStoredInToken {
 }
 
 export interface Session {
-  _id?: number;
+  _id?: string;
   refreshToken: string;
   createAt: Date;
   expireAt: Date;

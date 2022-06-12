@@ -1,4 +1,13 @@
-import { IsBoolean, IsEmail, IsIn, IsString, MinLength } from 'class-validator';
+import {
+  IsBoolean,
+  IsEmail,
+  IsIn,
+  IsNumber,
+  IsString,
+  IsUUID,
+  Length,
+  MinLength,
+} from 'class-validator';
 
 export class CreateUserDto {
   @IsString()
@@ -69,15 +78,20 @@ export class LoginResponseDto {
   public userName: string;
   public rol: string;
   public token: string;
-  public sessionId: number;
+  public sessionId: string;
   public refreshToken: string;
   public expireAt: Date;
 }
 
 export class LogoutSessionDto {
   @IsString()
-  userId: number;
+  @Length(24, 24)
+  userId: string;
 
   @IsString()
-  sessionId: number;
+  @Length(24, 24)
+  sessionId: string;
+
+  @IsUUID(4)
+  refreshToken: string;
 }
