@@ -1,5 +1,10 @@
 import { NextFunction, Request, Response } from 'express';
-import { LoginUserDto, LogoutSessionDto, RegisterUserDto } from '@dtos/users.dto';
+import {
+  LoginUserDto,
+  LogoutSessionDto,
+  RefreshTokenDto,
+  RegisterUserDto,
+} from '@dtos/auth.dto';
 import { User } from '@interfaces/users.interface';
 import AuthService from '@services/auth.service';
 
@@ -34,6 +39,17 @@ class AuthController {
       const logoutResponse = await this.authService.logout(logoutData);
 
       res.status(200).json({ data: logoutResponse, message: 'Session closed' });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  public refresh = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const refreshData: RefreshTokenDto = req.body;
+      const loginResponse = await this.authService.refresh(refreshData);
+
+      res.status(200).json(loginResponse);
     } catch (error) {
       next(error);
     }
