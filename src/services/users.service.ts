@@ -27,7 +27,8 @@ class UserService {
 
     userData.email = userData.email.toLowerCase();
     const findUser: User = await this.users.findOne({ email: userData.email });
-    if (findUser) throw new HttpException(409, `Email '${userData.email}' already exists`);
+    if (findUser)
+      throw new HttpException(409, `Email '${userData.email}' already exists`);
 
     const now = new Date();
     const hashedPassword = await hash(userData.password, 10);

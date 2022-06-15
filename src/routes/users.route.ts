@@ -16,7 +16,11 @@ class UsersRoute implements Routes {
 
   private initializeRoutes() {
     this.router.get(`${this.path}`, adminAuthMiddleware, this.usersController.getUsers);
-    this.router.get(`${this.path}/:id`, adminAuthMiddleware, this.usersController.getUserById);
+    this.router.get(
+      `${this.path}/:id`,
+      adminAuthMiddleware,
+      this.usersController.getUserById,
+    );
     this.router.post(
       `${this.path}`,
       adminAuthMiddleware,
@@ -29,7 +33,11 @@ class UsersRoute implements Routes {
       validationMiddleware(UpdateUserDto, 'body', true),
       this.usersController.updateUser,
     );
-    this.router.delete(`${this.path}/:id`, adminAuthMiddleware, this.usersController.deleteUser);
+    this.router.delete(
+      `${this.path}/:id`,
+      adminAuthMiddleware,
+      this.usersController.deleteUser,
+    );
   }
 }
 
