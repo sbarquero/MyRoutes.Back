@@ -4,6 +4,7 @@ import {
   LogoutSessionDto,
   RefreshTokenDto,
   RegisterUserDto,
+  RejectSessionDto,
 } from '@dtos/auth.dto';
 import { User } from '@interfaces/users.interface';
 import AuthService from '@services/auth.service';
@@ -50,6 +51,17 @@ class AuthController {
       const loginResponse = await this.authService.refresh(refreshData);
 
       res.status(200).json(loginResponse);
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  public reject = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const rejectData: RejectSessionDto = req.body;
+      const rejectResponse = await this.authService.reject(rejectData);
+
+      res.status(200).json({ data: rejectResponse, message: 'Session rejected' });
     } catch (error) {
       next(error);
     }

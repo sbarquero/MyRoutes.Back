@@ -1,9 +1,15 @@
 import { Router } from 'express';
 import AuthController from '@controllers/auth.controller';
-import { LoginUserDto, LogoutSessionDto, RegisterUserDto } from '@dtos/auth.dto';
+import {
+  LoginUserDto,
+  LogoutSessionDto,
+  RegisterUserDto,
+  RejectSessionDto,
+} from '@dtos/auth.dto';
 import { Routes } from '@interfaces/routes.interface';
 import validationMiddleware from '@middlewares/validation.middleware';
 import { RefreshTokenDto } from '@/dtos/auth.dto';
+import adminAuthMiddleware from '@/middlewares/adminauth.middleware';
 
 class AuthRoute implements Routes {
   public path = '/auth';
@@ -34,6 +40,12 @@ class AuthRoute implements Routes {
       `${this.path}/refresh`,
       validationMiddleware(RefreshTokenDto, 'body'),
       this.authController.refresh,
+    );
+    this.router.post(
+      `${this.path}/reject`,
+      validationMiddleware(RejectSessionDto, 'body'),
+      adminAuthMiddleware,
+      this.authController.reject,
     );
   }
 }

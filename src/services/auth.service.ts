@@ -8,6 +8,7 @@ import {
   RefreshTokenDto,
   AuthResponseDto,
   RegisterUserDto,
+  RejectSessionDto,
 } from '@dtos/auth.dto';
 import { HttpException } from '@exceptions/HttpException';
 import { DataStoredInToken } from '@interfaces/auth.interface';
@@ -154,6 +155,34 @@ class AuthService {
       expireAt: refreshToken.expireAt,
     };
     return response;
+  }
+
+  public async reject(rejectRequest: RejectSessionDto): Promise<Session> {
+    if (isEmpty(rejectRequest))
+      throw new HttpException(400, 'There are not RejectRequest');
+
+    const { userId, sessionId, refreshToken } = rejectRequest;
+    const findUser = await this.users.findById(userId);
+    if (!findUser) throw new HttpException(404, `UserId '${userId}' not found`);
+
+    const indexSession = findUser.sessions.findIndex(session => session._id == sessionId);
+    const indexRefreshToken = findUser.sessions.findIndex(
+      session => session.refreshToken == refreshToken,
+    );
+
+    if (indexSession === -1 && indexRefreshToken === -1)
+      throw new HttpException(
+        404,
+        `SessionId '${sessionId}' and RefreshToken '${refreshToken}' not found`,
+      );
+
+    let closedSession: Session;
+    if (indexSession !== -1) closedSession = findUser.sessions.splice(indexSession, 1)[0];
+    else closedSession = findUser.sessions.splice(indexRefreshToken, 1)[0];
+
+    await findUser.save();
+
+    return closedSession;
   }
 
   private createToken(user: User): string {

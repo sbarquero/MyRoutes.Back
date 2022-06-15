@@ -47,6 +47,19 @@ export class RefreshTokenDto {
   refreshToken: string;
 }
 
+export class RejectSessionDto {
+  @IsString()
+  @Length(24, 24)
+  userId: string;
+
+  @IsString()
+  @Length(24, 24)
+  sessionId: string;
+
+  @IsUUID(4)
+  refreshToken: string;
+}
+
 export class AuthResponseDto {
   public userId: string;
   public userName: string;
