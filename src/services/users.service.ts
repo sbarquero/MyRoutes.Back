@@ -1,16 +1,21 @@
 import { hash } from 'bcrypt';
 import { CreateUserDto, UpdateUserDto } from '@dtos/users.dto';
 import { HttpException } from '@exceptions/HttpException';
-import { User } from '@interfaces/users.interface';
+import { User, UserList } from '@interfaces/users.interface';
 import userModel from '@models/users.model';
 import { isEmpty, isValidId } from '@utils/util';
 
 class UserService {
   public users = userModel;
 
-  public async findAllUser(): Promise<User[]> {
-    const users: User[] = await this.users.find();
-    return users;
+  public async findAllUser(): Promise<UserList[]> {
+    const users = await this.users.find();
+    const usersList: UserList[] = [];
+    users.forEach(element => {
+      const { _id, name, email } = element;
+      usersList.push({ _id, name, email });
+    });
+    return usersList;
   }
 
   public async findUserById(userId: string): Promise<User> {

@@ -11,3 +11,9 @@ export interface User {
   createAt: Date;
   updateAt: Date;
 }
+
+export interface UserList {
+  _id: string;
+  name: string;
+  email: string;
+}
