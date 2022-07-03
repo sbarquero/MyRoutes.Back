@@ -18,9 +18,6 @@ export class CreateUserDto {
 
   @IsBoolean()
   public active: boolean;
-
-  @IsBoolean()
-  public google: boolean;
 }
 
 export class UpdateUserDto {
@@ -38,7 +35,4 @@ export class UpdateUserDto {
 
   @IsBoolean()
   public active: boolean;
-
-  @IsBoolean()
-  public google: boolean;
 }

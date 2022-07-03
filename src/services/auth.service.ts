@@ -37,7 +37,6 @@ class AuthService {
       password: hashedPassword,
       rol: 'user',
       active: false,
-      google: false,
       createAt: now,
       updateAt: null,
     });

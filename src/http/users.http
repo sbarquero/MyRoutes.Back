@@ -20,7 +20,6 @@ Content-Type: application/json
     "password": "password",
     "rol": "user",
     "active": true,
-    "google": false
 }
 
 ###
@@ -33,7 +32,6 @@ Content-Type: application/json
     "password": "password",
     "rol": "user",
     "active": true,
-    "google": false
 }
 
 ###

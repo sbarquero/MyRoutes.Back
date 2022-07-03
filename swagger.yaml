@@ -190,9 +190,6 @@ definitions:
       active:
         type: boolean
         description: user is active
-      google:
-        type: boolean
-        description: user use google authentication
 
 schemes:
  - https
