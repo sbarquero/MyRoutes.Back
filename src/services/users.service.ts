@@ -42,7 +42,7 @@ class UserService {
       ...userData,
       password: hashedPassword,
       createAt: now,
-      updateAt: null,
+      updateAt: now,
     });
 
     return createUserData;
