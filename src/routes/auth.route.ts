@@ -3,8 +3,10 @@ import AuthController from '@controllers/auth.controller';
 import {
   LoginUserDto,
   LogoutSessionDto,
+  RecoverPasswordDto,
   RegisterUserDto,
   RejectSessionDto,
+  ResetPasswordDto,
 } from '@dtos/auth.dto';
 import { Routes } from '@interfaces/routes.interface';
 import validationMiddleware from '@middlewares/validation.middleware';
@@ -46,6 +48,16 @@ class AuthRoute implements Routes {
       validationMiddleware(RejectSessionDto, 'body'),
       adminAuthMiddleware,
       this.authController.reject,
+    );
+    this.router.post(
+      `${this.path}/recover`,
+      validationMiddleware(RecoverPasswordDto, 'body'),
+      this.authController.recover,
+    );
+    this.router.post(
+      `${this.path}/reset-password`,
+      validationMiddleware(ResetPasswordDto, 'body'),
+      this.authController.reset,
     );
   }
 }

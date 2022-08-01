@@ -60,6 +60,21 @@ export class RejectSessionDto {
   refreshToken: string;
 }
 
+export class RecoverPasswordDto {
+  @IsEmail()
+  public email: string;
+}
+
+export class ResetPasswordDto {
+  @IsString()
+  @Length(32, 32)
+  public token: string;
+
+  @IsString()
+  @MinLength(6)
+  public password: string;
+}
+
 export class AuthResponseDto {
   public userId: string;
   public userName: string;

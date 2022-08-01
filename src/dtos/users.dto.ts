@@ -36,3 +36,8 @@ export class UpdateUserDto {
   @IsBoolean()
   public active: boolean;
 }
+
+export class ChangePasswordDto {
+  email: string;
+  password: string;
+}

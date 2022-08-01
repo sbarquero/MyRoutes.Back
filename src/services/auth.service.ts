@@ -1,6 +1,12 @@
 import { hash, compare } from 'bcrypt';
 import { sign } from 'jsonwebtoken';
-import { SECRET_KEY, TOKEN_DURATION, REFRESH_TOKEN_DURATION } from '@config';
+import {
+  RECOVER_URL,
+  RECOVER_TOKEN_DURATION,
+  SECRET_KEY,
+  TOKEN_DURATION,
+  REFRESH_TOKEN_DURATION,
+} from '@config';
 import {
   // LoginResponseDto,
   LoginUserDto,
@@ -9,17 +15,22 @@ import {
   AuthResponseDto,
   RegisterUserDto,
   RejectSessionDto,
+  RecoverPasswordDto,
+  ResetPasswordDto,
 } from '@dtos/auth.dto';
 import { HttpException } from '@exceptions/HttpException';
-import { DataStoredInToken } from '@interfaces/auth.interface';
+import { DataStoredInToken, Session } from '@interfaces/auth.interface';
 import { User } from '@interfaces/users.interface';
 import userModel from '@models/users.model';
 import { isEmpty } from '@utils/util';
-import { Session } from '@/interfaces/auth.interface';
-import { randomUUID } from 'crypto';
+import { randomBytes, randomUUID } from 'crypto';
+import MailService from './mail.service';
+import resetTokenModel from '@/models/resetToken.model';
+import { logger } from '@/utils/logger';
 
 class AuthService {
   public users = userModel;
+  public resetToken = resetTokenModel;
 
   public async register(userData: RegisterUserDto): Promise<User> {
     if (isEmpty(userData)) throw new HttpException(400, 'There are no data');
@@ -139,8 +150,6 @@ class AuthService {
 
     findUser.sessions[index] = refreshToken;
 
-    console.log('session', findUser.sessions[index]);
-
     await findUser.save();
 
     const response: AuthResponseDto = {
@@ -184,6 +193,52 @@ class AuthService {
     return closedSession;
   }
 
+  public async recover(recoverRequest: RecoverPasswordDto): Promise<void> {
+    const { email } = recoverRequest;
+    const user = await this.users.findOne({ email });
+    if (!user) {
+      logger.error(`Recover password: Email ${email} does not exist`);
+      return;
+    }
+    const token = randomBytes(16).toString('hex');
+    const recoverUrl = `${RECOVER_URL}/${token}`;
+
+    await this.resetToken.findOneAndDelete({ email: recoverRequest.email });
+    await this.resetToken.create({
+      email: recoverRequest.email,
+      token: token,
+      expireAt: new Date(Date.now() + parseInt(RECOVER_TOKEN_DURATION) * 60 * 1000),
+    });
+
+    const mailService = new MailService();
+    mailService.sendRecoverEmail(recoverRequest.email, recoverUrl);
+  }
+
+  public async reset(resetRequest: ResetPasswordDto): Promise<void> {
+    const { token, password } = resetRequest;
+    const response = await this.resetToken.find({ token });
+    if (response.length == 0) throw new HttpException(401, 'Invalid Token');
+
+    const { email, expireAt } = response[0];
+    const now = new Date(Date.now());
+
+    if (expireAt.getTime() < now.getTime()) {
+      await this.resetToken.findOneAndDelete({ token });
+      throw new HttpException(401, `Token has expired`);
+    }
+
+    const user = await this.users.findOne({ email: email });
+
+    if (!user) {
+      throw new HttpException(404, 'User not found');
+    }
+
+    user.password = await hash(password, 10);
+
+    await this.users.findByIdAndUpdate(user._id, user);
+    await this.resetToken.findOneAndDelete({ token });
+  }
+
   private createToken(user: User): string {
     const dataStoredInToken: DataStoredInToken = {
       id: user._id,
@@ -206,7 +261,6 @@ class AuthService {
 
   private refreshSession(session: Session): Session {
     const _id = session._id;
-    console.log('valor de _id:', _id);
     const refreshToken = randomUUID();
     const createAt = session.createAt;
     const expireAt = new Date(Date.now() + parseInt(REFRESH_TOKEN_DURATION) * 60 * 1000);
