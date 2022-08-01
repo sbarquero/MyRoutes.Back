@@ -85,3 +85,13 @@ export class AuthResponseDto {
   public refreshToken: string;
   public expireAt: Date;
 }
+
+export class ActivateUserDto {
+  @IsString()
+  @Length(32, 32)
+  public token: string;
+}
+
+export class ActivateResponseDto {
+  public email: string;
+}

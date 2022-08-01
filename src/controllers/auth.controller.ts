@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import {
+  ActivateUserDto,
   LoginUserDto,
   LogoutSessionDto,
   RecoverPasswordDto,
@@ -8,7 +9,6 @@ import {
   RejectSessionDto,
   ResetPasswordDto,
 } from '@dtos/auth.dto';
-import { User } from '@interfaces/users.interface';
 import AuthService from '@services/auth.service';
 
 class AuthController {
@@ -17,9 +17,9 @@ class AuthController {
   public register = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const userData: RegisterUserDto = req.body;
-      const registerUserData: User = await this.authService.register(userData);
+      await this.authService.register(userData);
 
-      res.status(201).json(registerUserData);
+      res.status(201).send();
     } catch (error) {
       next(error);
     }
@@ -91,6 +91,20 @@ class AuthController {
       const resetResponse = await this.authService.reset(resetPasswordData);
 
       res.status(200).json({ data: resetResponse, message: 'Password reset' });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  public activate = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const activateUserData: ActivateUserDto = {
+        token: req.body.token,
+      };
+
+      const activateResponse = await this.authService.activate(activateUserData);
+
+      res.status(200).json({ data: activateResponse, message: 'User account activated' });
     } catch (error) {
       next(error);
     }

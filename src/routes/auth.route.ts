@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import AuthController from '@controllers/auth.controller';
 import {
+  ActivateUserDto,
   LoginUserDto,
   LogoutSessionDto,
   RecoverPasswordDto,
@@ -58,6 +59,11 @@ class AuthRoute implements Routes {
       `${this.path}/reset-password`,
       validationMiddleware(ResetPasswordDto, 'body'),
       this.authController.reset,
+    );
+    this.router.post(
+      `${this.path}/activate-user`,
+      validationMiddleware(ActivateUserDto, 'body'),
+      this.authController.activate,
     );
   }
 }

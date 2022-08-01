@@ -3,12 +3,12 @@ import { sign } from 'jsonwebtoken';
 import {
   RECOVER_URL,
   RECOVER_TOKEN_DURATION,
+  ACTIVATION_URL,
   SECRET_KEY,
   TOKEN_DURATION,
   REFRESH_TOKEN_DURATION,
 } from '@config';
 import {
-  // LoginResponseDto,
   LoginUserDto,
   LogoutSessionDto,
   RefreshTokenDto,
@@ -17,6 +17,8 @@ import {
   RejectSessionDto,
   RecoverPasswordDto,
   ResetPasswordDto,
+  ActivateUserDto,
+  ActivateResponseDto,
 } from '@dtos/auth.dto';
 import { HttpException } from '@exceptions/HttpException';
 import { DataStoredInToken, Session } from '@interfaces/auth.interface';
@@ -27,47 +29,67 @@ import { randomBytes, randomUUID } from 'crypto';
 import MailService from './mail.service';
 import resetTokenModel from '@/models/resetToken.model';
 import { logger } from '@/utils/logger';
+import registerTokenModel from '@/models/registerToken.model';
 
 class AuthService {
   public users = userModel;
   public resetToken = resetTokenModel;
+  public registerToken = registerTokenModel;
+  public mailService = new MailService();
 
-  public async register(userData: RegisterUserDto): Promise<User> {
+  public async register(userData: RegisterUserDto): Promise<void> {
     if (isEmpty(userData)) throw new HttpException(400, 'There are no data');
 
-    userData.email = userData.email.toLowerCase();
-    const findUser: User = await this.users.findOne({ email: userData.email });
-    if (findUser)
-      throw new HttpException(409, `Email '${userData.email}' already exists`);
+    const email = userData.email.toLowerCase();
+    const findUser: User = await this.users.findOne({ email });
+    if (findUser && findUser.active) {
+      await this.registerToken.findOneAndRemove({ email });
+      throw new HttpException(409, `Email '${email}' already exists`);
+    }
 
+    if (findUser) {
+      // if user exist and is not active we send the token again
+      const { token } = await this.registerToken.findOne({ email });
+      this.sendActivationTokenEmail(email, token);
+      return;
+    }
+
+    // if new user account
     const hashedPassword = await hash(userData.password, 10);
     const now = new Date();
 
-    const createUserData: User = await this.users.create({
+    userData.email = email;
+
+    await this.users.create({
       ...userData,
       password: hashedPassword,
       rol: 'user',
       active: false,
       createAt: now,
-      updateAt: null,
+      updateAt: now,
     });
 
-    return createUserData;
+    const token = randomBytes(16).toString('hex');
+
+    await this.registerToken.findOneAndDelete({ email });
+    await this.registerToken.create({ email, token });
+    this.sendActivationTokenEmail(email, token);
   }
 
   public async login(userData: LoginUserDto): Promise<AuthResponseDto> {
     if (isEmpty(userData)) throw new HttpException(400, 'There are no data');
 
-    const findUser = await this.users.findOne({ email: userData.email.toLowerCase() });
-    if (!findUser) throw new HttpException(403, `Email ${userData.email} not found`);
+    const email = userData.email.toLowerCase();
+    const findUser = await this.users.findOne({ email });
+    if (!findUser) throw new HttpException(403, `Email ${email} not found`);
 
-    if (!findUser.active)
-      throw new HttpException(403, `Email ${userData.email} not active`);
+    if (!findUser.active) throw new HttpException(403, `Email ${email} not active`);
 
     const isPasswordMatching: boolean = await compare(
       userData.password,
       findUser.password,
     );
+
     if (!isPasswordMatching) throw new HttpException(403, 'Wrong password');
 
     const tokenData = this.createToken(findUser);
@@ -194,7 +216,7 @@ class AuthService {
   }
 
   public async recover(recoverRequest: RecoverPasswordDto): Promise<void> {
-    const { email } = recoverRequest;
+    const email = recoverRequest.email.toLowerCase();
     const user = await this.users.findOne({ email });
     if (!user) {
       logger.error(`Recover password: Email ${email} does not exist`);
@@ -210,16 +232,15 @@ class AuthService {
       expireAt: new Date(Date.now() + parseInt(RECOVER_TOKEN_DURATION) * 60 * 1000),
     });
 
-    const mailService = new MailService();
-    mailService.sendRecoverEmail(recoverRequest.email, recoverUrl);
+    this.mailService.sendRecoverEmail(recoverRequest.email, recoverUrl);
   }
 
   public async reset(resetRequest: ResetPasswordDto): Promise<void> {
     const { token, password } = resetRequest;
-    const response = await this.resetToken.find({ token });
-    if (response.length == 0) throw new HttpException(401, 'Invalid Token');
+    const response = await this.resetToken.findOne({ token });
+    if (!response) throw new HttpException(401, 'Invalid Token');
 
-    const { email, expireAt } = response[0];
+    const { email, expireAt } = response;
     const now = new Date(Date.now());
 
     if (expireAt.getTime() < now.getTime()) {
@@ -227,16 +248,33 @@ class AuthService {
       throw new HttpException(401, `Token has expired`);
     }
 
-    const user = await this.users.findOne({ email: email });
+    const user = await this.users.findOne({ email });
 
-    if (!user) {
-      throw new HttpException(404, 'User not found');
-    }
+    if (!user) throw new HttpException(404, 'User not found');
 
     user.password = await hash(password, 10);
 
     await this.users.findByIdAndUpdate(user._id, user);
     await this.resetToken.findOneAndDelete({ token });
+  }
+
+  public async activate(activateRequest: ActivateUserDto): Promise<ActivateResponseDto> {
+    const { token } = activateRequest;
+    const registeredToken = await this.registerToken.findOne({ token });
+    if (!registeredToken) throw new HttpException(401, 'Invalid Token');
+
+    const { email } = registeredToken;
+    const user = await this.users.findOne({ email });
+    if (!user) throw new HttpException(404, 'User not found');
+
+    user.active = true;
+    user.updateAt = new Date();
+
+    await this.users.findByIdAndUpdate(user._id, user);
+    await this.registerToken.findOneAndDelete({ token });
+
+    const response: ActivateResponseDto = { email };
+    return response;
   }
 
   private createToken(user: User): string {
@@ -265,6 +303,11 @@ class AuthService {
     const createAt = session.createAt;
     const expireAt = new Date(Date.now() + parseInt(REFRESH_TOKEN_DURATION) * 60 * 1000);
     return { _id, refreshToken, createAt, expireAt };
+  }
+
+  private sendActivationTokenEmail(email: string, token: string): void {
+    const activationUrl = `${ACTIVATION_URL}/${token}`;
+    this.mailService.sendActivationEmail(email, activationUrl);
   }
 }
 
