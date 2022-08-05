@@ -4,9 +4,11 @@ import { HttpException } from '@exceptions/HttpException';
 import { User, UserList } from '@interfaces/users.interface';
 import userModel from '@models/users.model';
 import { isEmpty, isValidId } from '@utils/util';
+import AuthService from './auth.service';
 
 class UserService {
   public users = userModel;
+  private auth = new AuthService();
 
   public async findAllUser(): Promise<UserList[]> {
     const users = await this.users.find();
@@ -24,7 +26,10 @@ class UserService {
     const findUser: User = await this.users.findOne({ _id: userId });
     if (!findUser) throw new HttpException(404, 'User ID not found');
 
-    return findUser;
+    await this.auth.removeExpiredSessions(userId, findUser.sessions);
+
+    const updatedUser = await this.users.findOne({ _id: userId });
+    return updatedUser;
   }
 
   public async createUser(userData: CreateUserDto): Promise<User> {
