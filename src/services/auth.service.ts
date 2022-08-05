@@ -92,6 +92,8 @@ class AuthService {
 
     if (!isPasswordMatching) throw new HttpException(403, 'Wrong password');
 
+    this.removeExpiredSessions(findUser.sessions);
+
     const tokenData = this.createToken(findUser);
     const refreshToken = this.createSession();
 
@@ -308,6 +310,19 @@ class AuthService {
   private sendActivationTokenEmail(email: string, token: string): void {
     const activationUrl = `${ACTIVATION_URL}/${token}`;
     this.mailService.sendActivationEmail(email, activationUrl);
+  }
+
+  private removeExpiredSessions(sessions: [Session]): [Session] {
+    const now = new Date();
+
+    for (let i = sessions.length - 1; i >= 0; i--) {
+      if (sessions[i].expireAt.getTime() < now.getTime()) {
+        console.log('borro:', sessions[i].expireAt);
+        sessions.splice(i, 1);
+      }
+    }
+
+    return sessions;
   }
 }
 
