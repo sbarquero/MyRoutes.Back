@@ -12,7 +12,7 @@ class FileService {
     if (!findUser) throw new HttpException(404, `UserId '${data.userId}' not found`);
 
     // TODO: pending development
-    console.log('file', data.file.toString());
+    console.log('file', data);
   }
 }
 
