@@ -1,31 +1,27 @@
-import {
-  IsBoolean,
-  IsDefined,
-  IsObject,
-  IsString,
-  Length,
-  MinLength,
-} from 'class-validator';
+import { IsBoolean, IsDefined, IsString, Length, MinLength } from 'class-validator';
+import { Transform } from 'class-transformer';
 
 export class CreateTrackDto {
-  @IsString()
-  @IsDefined()
-  @MinLength(3)
-  public name: string;
+  // @Transform(({ value }) => String(value), { toClassOnly: true })
+  // @IsString()
+  // @IsDefined()
+  // @MinLength(3)
+  // public name: string;
 
-  @IsString()
-  @IsDefined()
-  public description: string;
+  // @Transform(({ value }) => String(value), { toClassOnly: true })
+  // @IsString()
+  // @IsDefined()
+  // public description: string;
 
+  @Transform(({ value }) => String(value), { toClassOnly: true })
   @IsString()
   @IsDefined()
   @Length(24, 24)
   public userId: string;
 
-  @IsBoolean()
-  public isPublic: boolean;
+  // @Transform(({ value }) => Boolean(value), { toClassOnly: true })
+  // @IsBoolean()
+  // public isPublic: boolean;
 
-  @IsObject()
-  @IsDefined()
-  public geojsonData: Object;
+  file: Buffer;
 }

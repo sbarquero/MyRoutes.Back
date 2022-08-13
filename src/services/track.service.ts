@@ -1,3 +1,6 @@
+import { DOMParser } from 'xmldom';
+import * as tj from '@tmcw/togeojson';
+
 import { CreateTrackDto } from '@/dtos/track.dto';
 import { HttpException } from '@/exceptions/HttpException';
 import { isEmpty } from 'class-validator';
@@ -41,13 +44,25 @@ class TrackService {
   public async create(trackData: CreateTrackDto): Promise<Track> {
     if (isEmpty(trackData)) throw new HttpException(400, 'There are no data');
 
+    if (!trackData.file) throw new HttpException(400, 'File is required');
+
     const findUser: User = await this.users.findOne({ _id: trackData.userId });
     if (!findUser) throw new HttpException(404, 'User ID not found');
 
     const now = new Date();
 
+    const geojson = this.getGeojsonFromKML(trackData.file);
+
+    const lineProperties = this.getPropertiesFromGeojson(geojson, 'LineString');
+
+    const name = lineProperties.name;
+
     const createTrackData: Track = await this.track.create({
-      ...trackData,
+      name: name ? name : 'Track ' + now.getTime(),
+      description: '',
+      isPublic: false,
+      userId: trackData.userId,
+      geojsonData: geojson,
       createAt: now,
       updateAt: now,
     });
@@ -63,6 +78,18 @@ class TrackService {
     if (!deletedTrackById) throw new HttpException(404, `Track not found`);
 
     return deletedTrackById;
+  }
+
+  private getGeojsonFromKML(kmlFile: Buffer) {
+    const kml = new DOMParser().parseFromString(kmlFile.toString());
+    const geojson = tj.kml(kml);
+    return geojson;
+  }
+
+  private getPropertiesFromGeojson(geojson, geometryType: string) {
+    const features = geojson.features;
+    const f = features.find(feature => feature.geometry.type == geometryType);
+    return f.properties;
   }
 }
 

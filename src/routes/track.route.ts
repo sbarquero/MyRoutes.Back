@@ -1,7 +1,9 @@
 import { Router } from 'express';
 import { Routes } from '@interfaces/routes.interface';
-import TrackController from '@/controllers/track.controller';
+
 import { CreateTrackDto } from '@/dtos/track.dto';
+import { uploadFileToMemory } from '@/middlewares/file.middleware';
+import TrackController from '@/controllers/track.controller';
 import validationMiddleware from '@/middlewares/validation.middleware';
 
 class TrackRoute implements Routes {
@@ -18,6 +20,7 @@ class TrackRoute implements Routes {
     this.router.get(`${this.path}/:id`, this.trackController.getById);
     this.router.post(
       `${this.path}`,
+      uploadFileToMemory(),
       validationMiddleware(CreateTrackDto, 'body'),
       this.trackController.create,
     );
