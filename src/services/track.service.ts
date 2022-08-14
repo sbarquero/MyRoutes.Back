@@ -24,8 +24,28 @@ class TrackService {
     const trackList: TrackList[] = [];
 
     tracks.forEach(element => {
-      const { _id, name, description, userId, isPublic, createAt, updateAt } = element;
-      trackList.push({ _id, name, description, userId, isPublic, createAt, updateAt });
+      const {
+        _id,
+        name,
+        description,
+        userId,
+        isPublic,
+        fileName,
+        createAt,
+        uploadAt,
+        updateAt,
+      } = element;
+      trackList.push({
+        _id,
+        name,
+        description,
+        userId,
+        isPublic,
+        fileName,
+        createAt,
+        uploadAt,
+        updateAt,
+      });
     });
 
     return trackList;
@@ -53,20 +73,15 @@ class TrackService {
 
     const geojson = this.getGeojsonFromKML(trackData.file);
 
-    const lineProperties = this.getPropertiesFromGeojson(geojson, 'LineString');
-
-    const name = lineProperties.name;
+    console.log('trackData', trackData);
 
     const createTrackData: Track = await this.track.create({
-      name: name ? name : 'Track ' + now.getTime(),
-      description: '',
-      isPublic: false,
-      userId: trackData.userId,
+      ...trackData,
       geojsonData: geojson,
-      createAt: now,
+      uploadAt: now,
       updateAt: now,
     });
-
+    console.log('createTrackData', createTrackData);
     return createTrackData;
   }
 

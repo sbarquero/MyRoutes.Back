@@ -4,7 +4,9 @@ export interface Track {
   description: string;
   userId: string;
   isPublic: boolean;
+  fileName: string;
   createAt: Date;
+  uploadAt: Date;
   updateAt: Date;
   geojsonData: Object;
 }
@@ -15,6 +17,8 @@ export interface TrackList {
   description: string;
   userId: string;
   isPublic: boolean;
+  fileName: string;
   createAt: Date;
+  uploadAt: Date;
   updateAt: Date;
 }

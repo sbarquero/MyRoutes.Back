@@ -31,7 +31,7 @@ class TrackController {
   public create = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const trackData: CreateTrackDto = {
-        userId: req.body.userId,
+        ...req.body,
         file: req.file?.buffer,
       };
       const createTrackData: Track = await this.trackService.create(trackData);

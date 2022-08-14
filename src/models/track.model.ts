@@ -23,7 +23,15 @@ const trackSchema: Schema = new Schema({
     type: Object,
     required: true,
   },
+  fileName: {
+    type: String,
+    required: true,
+  },
   createAt: {
+    type: Date,
+    required: false,
+  },
+  uploadAt: {
     type: Date,
     required: false,
   },
