@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import AuthController from '@controllers/auth.controller';
+
 import {
   ActivateUserDto,
   LoginUserDto,
@@ -9,10 +9,11 @@ import {
   RejectSessionDto,
   ResetPasswordDto,
 } from '@dtos/auth.dto';
-import { Routes } from '@interfaces/routes.interface';
-import validationMiddleware from '@middlewares/validation.middleware';
 import { RefreshTokenDto } from '@/dtos/auth.dto';
-import adminAuthMiddleware from '@/middlewares/adminauth.middleware';
+import { Routes } from '@interfaces/routes.interface';
+import AuthController from '@controllers/auth.controller';
+import authMiddleware from '@/middlewares/auth.middleware';
+import validationMiddleware from '@middlewares/validation.middleware';
 
 class AuthRoute implements Routes {
   public path = '/auth';
@@ -47,7 +48,7 @@ class AuthRoute implements Routes {
     this.router.post(
       `${this.path}/reject`,
       validationMiddleware(RejectSessionDto, 'body'),
-      adminAuthMiddleware,
+      authMiddleware('admin'),
       this.authController.reject,
     );
     this.router.post(

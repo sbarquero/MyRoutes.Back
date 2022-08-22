@@ -42,3 +42,25 @@ export class CreateTrackDto {
 
   file: Buffer;
 }
+
+export class UpdateTrackDto {
+  @Transform(({ value }) => String(value), { toClassOnly: true })
+  @IsString()
+  @IsDefined()
+  @MinLength(3)
+  public name: string;
+
+  @Transform(({ value }) => String(value), { toClassOnly: true })
+  @IsString()
+  @IsDefined()
+  public description: string;
+
+  @Transform(({ value }) => Boolean(value), { toClassOnly: true })
+  @IsBoolean()
+  public isPublic: boolean;
+
+  @Transform(({ value }) => new Date(value), { toClassOnly: true })
+  @IsDate()
+  @IsDefined()
+  public createAt: Date;
+}
