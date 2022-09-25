@@ -11,7 +11,10 @@ class UserService {
   private auth = new AuthService();
 
   public async findAllUser(): Promise<UserList[]> {
-    const users = await this.users.find();
+    const users = await this.users
+      .find()
+      .collation({ locale: 'es' })
+      .sort({ name: 'asc' });
     const usersList: UserList[] = [];
     users.forEach(element => {
       const { _id, name, email } = element;

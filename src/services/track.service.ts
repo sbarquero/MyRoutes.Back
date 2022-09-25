@@ -15,7 +15,10 @@ class TrackService {
   public users = userModel;
 
   public async findAll(): Promise<TrackList[]> {
-    const tracks = await this.track.find().sort({ name: 'asc' });
+    const tracks = await this.track
+      .find()
+      .collation({ locale: 'es' })
+      .sort({ name: 'asc' });
     const trackList = [] as TrackList[];
 
     tracks.forEach(element => {
@@ -50,7 +53,10 @@ class TrackService {
   }
 
   public async findAllPublic(): Promise<TrackList[]> {
-    const tracks = await this.track.find({ isPublic: true }).sort({ name: 'asc' });
+    const tracks = await this.track
+      .find({ isPublic: true })
+      .collation({ locale: 'es' })
+      .sort({ name: 'asc' });
     const trackList = [] as TrackList[];
 
     tracks.forEach(element => {
@@ -89,6 +95,7 @@ class TrackService {
 
     const tracks = await this.track
       .find({ $or: [{ userId }, { isPublic: true }] })
+      .collation({ locale: 'es' })
       .sort({ name: 'asc' });
     const trackList: TrackList[] = [];
 
