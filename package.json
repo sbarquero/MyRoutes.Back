@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "@tmcw/togeojson": "^5.2.2",
+    "@xmldom/xmldom": "^0.8.3",
     "bcrypt": "^5.0.1",
     "class-transformer": "^0.4.0",
     "class-validator": "^0.13.1",
@@ -37,8 +38,7 @@
     "swagger-jsdoc": "^6.0.0",
     "swagger-ui-express": "^4.1.6",
     "winston": "^3.3.3",
-    "winston-daily-rotate-file": "^4.5.5",
-    "xmldom": "^0.6.0"
+    "winston-daily-rotate-file": "^4.5.5"
   },
   "devDependencies": {
     "@swc/cli": "^0.1.51",

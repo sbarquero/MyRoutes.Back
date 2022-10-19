@@ -1,4 +1,4 @@
-import { DOMParser } from 'xmldom';
+import { DOMParser } from '@xmldom/xmldom';
 import * as tj from '@tmcw/togeojson';
 
 import { CreateTrackDto, UpdateTrackDto } from '@/dtos/track.dto';
