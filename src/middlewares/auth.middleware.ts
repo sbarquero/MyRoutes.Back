@@ -4,7 +4,7 @@ import { verify } from 'jsonwebtoken';
 import { SECRET_KEY } from '@config';
 import { HttpException } from '@exceptions/HttpException';
 import { DataStoredInToken /*, RequestWithUser*/ } from '@interfaces/auth.interface';
-import userModel from '@models/users.model';
+import userModel from '@/models/user.model';
 
 const authMiddleware = (rol = 'user' as string | 'admin' | 'user'): RequestHandler => {
   return async (req: Request, res: Response, next: NextFunction) => {

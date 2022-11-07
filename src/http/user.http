@@ -3,15 +3,15 @@
 
 ###
 # Find All Users
-GET {{ baseURL }}/users
+GET {{ baseURL }}/user
 
 ###
 # Find User By Id
-GET {{ baseURL }}/users/1
+GET {{ baseURL }}/user/1
 
 ###
 # Create User
-POST {{ baseURL }}/users
+POST {{ baseURL }}/user
 Content-Type: application/json
 
 {
@@ -24,7 +24,7 @@ Content-Type: application/json
 
 ###
 # Modify User By Id
-PUT {{ baseURL }}/users/1
+PUT {{ baseURL }}/user/1
 Content-Type: application/json
 
 {
@@ -36,4 +36,4 @@ Content-Type: application/json
 
 ###
 # Delete User By Id
-DELETE {{ baseURL }}/users/1
+DELETE {{ baseURL }}/user/1

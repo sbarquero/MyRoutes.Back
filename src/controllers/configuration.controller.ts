@@ -2,9 +2,9 @@ import { NextFunction, Request, Response } from 'express';
 
 import { getUserIdFromAuthorizationToken } from '@/utils/auth';
 import { HttpException } from '@/exceptions/HttpException';
-import { UpdateUserDto } from '@/dtos/users.dto';
-import { User } from '@/interfaces/users.interface';
-import UserService from '@/services/users.service';
+import { UpdateUserDto } from '@/dtos/user.dto';
+import { User } from '@/interfaces/user.interface';
+import UserService from '@/services/user.service';
 
 class ConfigurationController {
   public userService = new UserService();

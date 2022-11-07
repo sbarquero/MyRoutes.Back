@@ -22,8 +22,8 @@ import {
 } from '@dtos/auth.dto';
 import { HttpException } from '@exceptions/HttpException';
 import { DataStoredInToken, Session } from '@interfaces/auth.interface';
-import { User } from '@interfaces/users.interface';
-import userModel from '@models/users.model';
+import { User } from '@/interfaces/user.interface';
+import userModel from '@/models/user.model';
 import { isEmpty } from '@utils/util';
 import { randomBytes, randomUUID } from 'crypto';
 import MailService from './mail.service';
@@ -32,7 +32,7 @@ import { logger } from '@/utils/logger';
 import registerTokenModel from '@/models/registerToken.model';
 
 class AuthService {
-  public users = userModel;
+  public user = userModel;
   public resetToken = resetTokenModel;
   public registerToken = registerTokenModel;
   public mailService = new MailService();
@@ -41,7 +41,7 @@ class AuthService {
     if (isEmpty(userData)) throw new HttpException(400, 'There are no data');
 
     const email = userData.email.toLowerCase();
-    const findUser: User = await this.users.findOne({ email });
+    const findUser: User = await this.user.findOne({ email });
     if (findUser && findUser.active) {
       await this.registerToken.findOneAndRemove({ email });
       throw new HttpException(409, `Email '${email}' already exists`);
@@ -60,7 +60,7 @@ class AuthService {
 
     userData.email = email;
 
-    await this.users.create({
+    await this.user.create({
       ...userData,
       password: hashedPassword,
       rol: 'user',
@@ -80,7 +80,7 @@ class AuthService {
     if (isEmpty(userData)) throw new HttpException(400, 'There are no data');
 
     const email = userData.email.toLowerCase();
-    const findUser = await this.users.findOne({ email });
+    const findUser = await this.user.findOne({ email });
     if (!findUser) throw new HttpException(403, `Email ${email} not found`);
 
     if (!findUser.active) throw new HttpException(403, `Email ${email} not active`);
@@ -121,7 +121,7 @@ class AuthService {
       throw new HttpException(400, 'There are not LogoutRequest');
 
     const { userId, sessionId, refreshToken } = logoutRequest;
-    const findUser = await this.users.findById(userId);
+    const findUser = await this.user.findById(userId);
     if (!findUser) throw new HttpException(404, `UserId '${userId}' not found`);
 
     const index = findUser.sessions.findIndex(session => session._id == sessionId);
@@ -142,7 +142,7 @@ class AuthService {
   public async refresh(refreshData: RefreshTokenDto): Promise<AuthResponseDto> {
     if (isEmpty(refreshData)) throw new HttpException(400, 'There are no data');
 
-    const findUser = await this.users.findById(refreshData.userId);
+    const findUser = await this.user.findById(refreshData.userId);
     if (!findUser) throw new HttpException(403, `UserId ${refreshData.userId} not found`);
 
     if (!findUser.active)
@@ -194,7 +194,7 @@ class AuthService {
       throw new HttpException(400, 'There are not RejectRequest');
 
     const { userId, sessionId, refreshToken } = rejectRequest;
-    const findUser = await this.users.findById(userId);
+    const findUser = await this.user.findById(userId);
     if (!findUser) throw new HttpException(404, `UserId '${userId}' not found`);
 
     const indexSession = findUser.sessions.findIndex(session => session._id == sessionId);
@@ -219,7 +219,7 @@ class AuthService {
 
   public async recover(recoverRequest: RecoverPasswordDto): Promise<void> {
     const email = recoverRequest.email.toLowerCase();
-    const user = await this.users.findOne({ email });
+    const user = await this.user.findOne({ email });
     if (!user) {
       logger.error(`Recover password: Email ${email} does not exist`);
       return;
@@ -250,13 +250,13 @@ class AuthService {
       throw new HttpException(401, `Token has expired`);
     }
 
-    const user = await this.users.findOne({ email });
+    const user = await this.user.findOne({ email });
 
     if (!user) throw new HttpException(404, 'User not found');
 
     user.password = await hash(password, 10);
 
-    await this.users.findByIdAndUpdate(user._id, user);
+    await this.user.findByIdAndUpdate(user._id, user);
     await this.resetToken.findOneAndDelete({ token });
   }
 
@@ -266,13 +266,13 @@ class AuthService {
     if (!registeredToken) throw new HttpException(401, 'Invalid Token');
 
     const { email } = registeredToken;
-    const user = await this.users.findOne({ email });
+    const user = await this.user.findOne({ email });
     if (!user) throw new HttpException(404, 'User not found');
 
     user.active = true;
     user.updateAt = new Date();
 
-    await this.users.findByIdAndUpdate(user._id, user);
+    await this.user.findByIdAndUpdate(user._id, user);
     await this.registerToken.findOneAndDelete({ token });
 
     const response: ActivateResponseDto = { email };

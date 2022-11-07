@@ -5,7 +5,7 @@ tags:
   description: Configuration API endpoints
 - name: Track
   description: Tracks API endpoints
-- name: Users
+- name: User
   description: Users API endpoints
 
 paths:
@@ -346,11 +346,11 @@ paths:
           description: 'Server Error'
 
 
-# [GET] users
-  /users:
+# [GET] user
+  /user:
     get:
       tags:
-      - Users
+      - User
       summary: Find all Users
       responses:
         200:
@@ -358,11 +358,11 @@ paths:
         500:
           description: 'Server Error'
 
-# [POST] users
+# [POST] user
     post:
       tags:
-      - Users
-      summary: Add an User
+      - User
+      summary: Add a User
       parameters:
       - name: body
         in: body
@@ -380,11 +380,11 @@ paths:
         500:
           description: 'Server Error'
 
-# [GET] users/id
-  /users/{id}:
+# [GET] user/id
+  /user/{id}:
     get:
       tags:
-      - Users
+      - User
       summary: Find an User by Id
       parameters:
       - name: id
@@ -401,11 +401,11 @@ paths:
         500:
           description: 'Server Error'
 
-# [PUT] users/id
+# [PUT] user/id
     put:
       tags:
-      - Users
-      summary: Update an User by Id
+      - User
+      summary: Update a User by Id
       parameters:
       - name: id
         in: path
@@ -427,11 +427,11 @@ paths:
         500:
           description: 'Server Error'
 
-# [DELETE] users/id
+# [DELETE] user/id
     delete:
       tags:
-      - Users
-      summary: Delete User By Id
+      - User
+      summary: Delete a User By Id
       parameters:
       - name: id
         in: path

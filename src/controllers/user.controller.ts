@@ -1,10 +1,10 @@
 import { NextFunction, Request, Response } from 'express';
 
-import { CreateUserDto, UpdateUserDto } from '@dtos/users.dto';
-import { User, UserList } from '@interfaces/users.interface';
-import UserService from '@services/users.service';
+import { CreateUserDto, UpdateUserDto } from '@/dtos/user.dto';
+import { User, UserList } from '@/interfaces/user.interface';
+import UserService from '@/services/user.service';
 
-class UsersController {
+class UserController {
   public userService = new UserService();
 
   public getUsers = async (req: Request, res: Response, next: NextFunction) => {
@@ -63,4 +63,4 @@ class UsersController {
   };
 }
 
-export default UsersController;
+export default UserController;

@@ -1,17 +1,17 @@
 import { hash } from 'bcrypt';
-import { CreateUserDto, UpdateUserDto } from '@dtos/users.dto';
+import { CreateUserDto, UpdateUserDto } from '@/dtos/user.dto';
 import { HttpException } from '@exceptions/HttpException';
-import { User, UserList } from '@interfaces/users.interface';
-import userModel from '@models/users.model';
+import { User, UserList } from '@/interfaces/user.interface';
+import userModel from '@/models/user.model';
 import { isEmpty, isValidId } from '@utils/util';
 import AuthService from './auth.service';
 
 class UserService {
-  public users = userModel;
+  public user = userModel;
   private auth = new AuthService();
 
   public async findAllUser(): Promise<UserList[]> {
-    const users = await this.users
+    const users = await this.user
       .find()
       .collation({ locale: 'es' })
       .sort({ name: 'asc' });
@@ -26,12 +26,12 @@ class UserService {
   public async findUserById(userId: string): Promise<User> {
     if (!isValidId(userId)) throw new HttpException(400, 'Invalid user ID format');
 
-    const findUser: User = await this.users.findOne({ _id: userId });
+    const findUser: User = await this.user.findOne({ _id: userId });
     if (!findUser) throw new HttpException(404, 'User ID not found');
 
     await this.auth.removeExpiredSessions(userId, findUser.sessions);
 
-    const updatedUser = await this.users.findOne({ _id: userId });
+    const updatedUser = await this.user.findOne({ _id: userId });
     return updatedUser;
   }
 
@@ -39,14 +39,14 @@ class UserService {
     if (isEmpty(userData)) throw new HttpException(400, 'There are no data');
 
     userData.email = userData.email.toLowerCase();
-    const findUser: User = await this.users.findOne({ email: userData.email });
+    const findUser: User = await this.user.findOne({ email: userData.email });
     if (findUser)
       throw new HttpException(409, `Email '${userData.email}' already exists`);
 
     const now = new Date();
     const hashedPassword = await hash(userData.password, 10);
 
-    const createUserData: User = await this.users.create({
+    const createUserData: User = await this.user.create({
       ...userData,
       password: hashedPassword,
       createAt: now,
@@ -61,7 +61,7 @@ class UserService {
 
     if (isEmpty(userData)) throw new HttpException(400, 'There are no data');
 
-    const findUser: User = await this.users.findById(userId);
+    const findUser: User = await this.user.findById(userId);
     if (!findUser) throw new HttpException(404, `User not found`);
 
     if (userData.password) {
@@ -70,9 +70,9 @@ class UserService {
     }
 
     const now = new Date();
-    await this.users.findByIdAndUpdate(userId, { ...userData, updateAt: now });
+    await this.user.findByIdAndUpdate(userId, { ...userData, updateAt: now });
 
-    const updateUserById: User = await this.users.findById(userId);
+    const updateUserById: User = await this.user.findById(userId);
 
     return updateUserById;
   }
@@ -80,7 +80,7 @@ class UserService {
   public async deleteUser(userId: string): Promise<User> {
     if (!isValidId(userId)) throw new HttpException(400, 'Invalid user ID format');
 
-    const deleteUserById: User = await this.users.findByIdAndDelete(userId);
+    const deleteUserById: User = await this.user.findByIdAndDelete(userId);
 
     if (!deleteUserById) throw new HttpException(404, `User not found`);
 

@@ -2,7 +2,8 @@ import bcrypt from 'bcrypt';
 import mongoose from 'mongoose';
 import request from 'supertest';
 import App from '../app';
-import { CreateUserDto, LoginUserDto } from '../dtos/users.dto';
+import { CreateUserDto } from '../dtos/user.dto';
+import { LoginUserDto } from '../dtos/auth.dto';
 import AuthRoute from '../routes/auth.route';
 
 afterAll(async () => {
@@ -16,13 +17,15 @@ describe('Testing Auth', () => {
         name: 'Test Name',
         email: 'test@email.com',
         password: 'q1w2e3r4!',
+        rol: 'user',
+        active: true,
       };
 
       const authRoute = new AuthRoute();
-      const users = authRoute.authController.authService.users;
+      const user = authRoute.authController.authService.user;
 
-      users.findOne = jest.fn().mockReturnValue(null);
-      users.create = jest.fn().mockReturnValue({
+      user.findOne = jest.fn().mockReturnValue(null);
+      user.create = jest.fn().mockReturnValue({
         _id: '60706478aad6c9ad19a31c84',
         email: userData.email,
         password: await bcrypt.hash(userData.password, 10),
@@ -42,9 +45,9 @@ describe('Testing Auth', () => {
       };
 
       const authRoute = new AuthRoute();
-      const users = authRoute.authController.authService.users;
+      const user = authRoute.authController.authService.user;
 
-      users.findOne = jest.fn().mockReturnValue({
+      user.findOne = jest.fn().mockReturnValue({
         _id: '60706478aad6c9ad19a31c84',
         email: userData.email,
         password: await bcrypt.hash(userData.password, 10),
@@ -68,9 +71,9 @@ describe('Testing Auth', () => {
   //     };
 
   //     const authRoute = new AuthRoute();
-  //     const users = authRoute.authController.authService.users;
+  //     const user = authRoute.authController.authService.user;
 
-  //     users.findOne = jest.fn().mockReturnValue(userData);
+  //     user.findOne = jest.fn().mockReturnValue(userData);
 
   //     (mongoose as any).connect = jest.fn();
   //     const app = new App([authRoute]);

@@ -6,13 +6,13 @@ import { HttpException } from '@/exceptions/HttpException';
 import { isEmpty } from 'class-validator';
 import { isValidId } from '@/utils/util';
 import { Track, TrackList } from '@/interfaces/track.interface';
-import { User } from '@/interfaces/users.interface';
+import { User } from '@/interfaces/user.interface';
 import trackModel from '@/models/track.model';
-import userModel from '@/models/users.model';
+import userModel from '@/models/user.model';
 
 class TrackService {
   public track = trackModel;
-  public users = userModel;
+  public user = userModel;
 
   public async findAll(): Promise<TrackList[]> {
     const tracks = await this.track
@@ -142,7 +142,7 @@ class TrackService {
 
     if (!trackData.file) throw new HttpException(400, 'File is required');
 
-    const findUser: User = await this.users.findOne({ _id: trackData.userId });
+    const findUser: User = await this.user.findOne({ _id: trackData.userId });
     if (!findUser) throw new HttpException(404, 'User ID not found');
 
     const now = new Date();
@@ -169,7 +169,7 @@ class TrackService {
     const now = new Date();
     await this.track.findByIdAndUpdate(trackId, { ...trackData, updateAt: now });
 
-    const updatedTrack: Track = await this.users.findById(trackId);
+    const updatedTrack: Track = await this.user.findById(trackId);
 
     return updatedTrack;
   }
