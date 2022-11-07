@@ -244,6 +244,27 @@ paths:
         500:
           description: 'Server Error'
 
+# [GET] track/id
+  /track/{id}:
+    get:
+      tags:
+      - Track
+      summary: Get track by ID
+      parameters:
+      - name: id
+        in: path
+        description: Track ID
+        required: true
+      responses:
+        200:
+          description: 'OK'
+        400:
+          description: 'Bad Request'
+        404:
+          description: 'Not Found'
+        500:
+          description: 'Server Error'
+
 # [PUT] track/id
     put:
       tags:
@@ -270,16 +291,15 @@ paths:
         500:
           description: 'Server Error'
 
-# [GET] track/id
-  /track/{id}:
-    get:
+# [DELETE] track/id
+    delete:
       tags:
       - Track
-      summary: Get track by ID
+      summary: Delete a Track By Id
       parameters:
       - name: id
         in: path
-        description: Track ID
+        description: Track Id
         required: true
       responses:
         200:
