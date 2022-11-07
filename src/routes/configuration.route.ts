@@ -1,7 +1,7 @@
 import { Router } from 'express';
 
 import { Routes } from '@/interfaces/routes.interface';
-import { UpdateUserDto } from '@dtos/users.dto';
+import { UpdateConfigurationDto } from '@/dtos/configuration.dto';
 import authMiddleware from '@/middlewares/auth.middleware';
 import ConfigurationController from '@/controllers/configuration.controller';
 import validationMiddleware from '@/middlewares/validation.middleware';
@@ -24,7 +24,7 @@ class ConfigurationRoute implements Routes {
     this.router.put(
       `${this.path}/:id`,
       authMiddleware('user'),
-      validationMiddleware(UpdateUserDto, 'body', true),
+      validationMiddleware(UpdateConfigurationDto, 'body', true),
       this.configurationController.updateUser,
     );
   }
