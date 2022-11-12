@@ -147,7 +147,15 @@ class TrackService {
 
     const now = new Date();
 
-    const geojson = this.getGeojsonFromKML(trackData.file);
+    const geojson = this.getGeojsonFromSpecificFileType(
+      trackData.fileName,
+      trackData.file,
+    );
+
+    if (!geojson) throw new HttpException(400, 'File type not allowed');
+
+    if (geojson.features.length <= 0)
+      throw new HttpException(400, 'No GeoJson data found in file');
 
     const createTrackData: Track = await this.track.create({
       ...trackData,
@@ -184,16 +192,38 @@ class TrackService {
     return deletedTrackById;
   }
 
-  private getGeojsonFromKML(kmlFile: Buffer) {
+  private getGeojsonFromSpecificFileType(fileName: string, file: Buffer) {
+    const fileType = fileName.split('.').pop();
+
+    if (fileType === 'kml') {
+      return this.getGeojsonFromKML(file);
+    }
+
+    if (fileType === 'gpx') {
+      return this.getGeojsonFromGPX(file);
+    }
+
+    if (fileType === 'geojson') {
+      return this.getGeojsonFromGeojsonFileBuffer(file);
+    }
+
+    return null;
+  }
+
+  private getGeojsonFromKML(kmlFile: Buffer): any {
     const kml = new DOMParser().parseFromString(kmlFile.toString());
     const geojson = tj.kml(kml);
     return geojson;
   }
 
-  private getPropertiesFromGeojson(geojson, geometryType: string) {
-    const features = geojson.features;
-    const f = features.find(feature => feature.geometry.type == geometryType);
-    return f.properties;
+  private getGeojsonFromGPX(gpxFile: Buffer): any {
+    const kml = new DOMParser().parseFromString(gpxFile.toString());
+    const geojson = tj.gpx(kml);
+    return geojson;
+  }
+
+  private getGeojsonFromGeojsonFileBuffer(geojsonFile: Buffer): any {
+    return JSON.parse(geojsonFile.toString());
   }
 }
 
