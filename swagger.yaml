@@ -1,12 +1,12 @@
 tags:
 - name: Auth
-  description: Authorization API endpoints
+  description: Everything about authorizations
 - name: Configuration
-  description: Configuration API endpoints
+  description: Allows a user to change their settings
 - name: Track
-  description: Tracks API endpoints
+  description: Everything about tracks/routes
 - name: User
-  description: Users API endpoints
+  description: Operations about Users
 
 paths:
 # [POST] auth/register
@@ -167,11 +167,11 @@ paths:
     get:
       tags:
       - Configuration
-      summary: Gets user configuration by ID
+      summary: Gets user configuration by Id
       parameters:
       - name: id
         in: path
-        description: User ID
+        description: User Id
         required: true
       responses:
         200:
@@ -187,11 +187,11 @@ paths:
     put:
       tags:
       - Configuration
-      summary: Update user configuration by ID
+      summary: Update user configuration by Id
       parameters:
       - name: id
         in: path
-        description: User ID
+        description: User Id
         required: true
       - name: body
         in: body
@@ -215,7 +215,7 @@ paths:
     get:
       tags:
       - Track
-      summary: List all tracks
+      summary: List all tracks/routes
       responses:
         200:
           description: 'OK'
@@ -226,7 +226,7 @@ paths:
     post:
       tags:
       - Track
-      summary: Create a new track 
+      summary: Create a new track/route
       parameters:
       - name: body
         in: body
@@ -249,11 +249,11 @@ paths:
     get:
       tags:
       - Track
-      summary: Get track by ID
+      summary: Get track/route by Id
       parameters:
       - name: id
         in: path
-        description: Track ID
+        description: Track Id
         required: true
       responses:
         200:
@@ -269,11 +269,11 @@ paths:
     put:
       tags:
       - Track
-      summary: Update an existing track 
+      summary: Update an existing track/route 
       parameters:
       - name: id
         in: path
-        description: Track ID
+        description: Track Id
         required: true
       - name: body
         in: body
@@ -295,7 +295,7 @@ paths:
     delete:
       tags:
       - Track
-      summary: Delete a Track By Id
+      summary: Delete a track/route by Id
       parameters:
       - name: id
         in: path
@@ -316,7 +316,7 @@ paths:
     get:
       tags:
       - Track
-      summary: List all public tracks
+      summary: List all public tracks/routes
       responses:
         200:
           description: 'OK'
@@ -328,11 +328,11 @@ paths:
     get:
       tags:
       - Track
-      summary: Get public track by ID
+      summary: Get public track/route by Id
       parameters:
       - name: id
         in: path
-        description: Track ID
+        description: Track Id
         required: true
       responses:
         200:
@@ -349,11 +349,11 @@ paths:
     get:
       tags:
       - Track
-      summary: List all tracks by user ID
+      summary: List all tracks/routes by user Id
       parameters:
       - name: id
         in: path
-        description: User ID
+        description: User Id
         required: true
       responses:
         200:
@@ -506,10 +506,10 @@ definitions:
     properties:
       userId:
         type: string
-        description: user ID
+        description: user Id
       sessionId:
         type: string
-        description: session ID
+        description: session Id
       refreshToken:
         type: string
         description: refresh token
@@ -522,10 +522,10 @@ definitions:
     properties:
       userId:
         type: string
-        description: user ID
+        description: user Id
       sessionId:
         type: string
-        description: session ID
+        description: session Id
       refreshToken:
         type: string
         description: refresh token
@@ -538,10 +538,10 @@ definitions:
     properties:
       userId:
         type: string
-        description: user ID
+        description: user Id
       sessionId:
         type: string
-        description: session ID
+        description: session Id
       refreshToken:
         type: string
         description: refresh token
@@ -603,7 +603,7 @@ definitions:
         description: track Description
       userId:
         type: string
-        description: user ID
+        description: user Id
       isPublic:
         type: boolean
         description: track is Public
