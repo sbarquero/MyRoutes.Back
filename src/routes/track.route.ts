@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import { Routes } from '@interfaces/routes.interface';
 
 import { CreateTrackDto, UpdateTrackDto } from '@/dtos/track.dto';
+import { Routes } from '@interfaces/routes.interface';
 import { uploadFileToMemory } from '@/middlewares/file.middleware';
 import authMiddleware from '@/middlewares/auth.middleware';
 import TrackController from '@/controllers/track.controller';

@@ -1,10 +1,10 @@
 import { NextFunction, Request, Response } from 'express';
 
 import { CreateTrackDto, UpdateTrackDto } from '@/dtos/track.dto';
+import { getUserIdFromAuthorizationToken } from '@/utils/auth';
 import { HttpException } from '@/exceptions/HttpException';
 import { Track, TrackList } from '@/interfaces/track.interface';
 import TrackService from '@/services/track.service';
-import { getUserIdFromAuthorizationToken } from '@/utils/auth';
 
 class TrackController {
   private trackService = new TrackService();

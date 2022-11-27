@@ -1,9 +1,10 @@
-import { RequestHandler } from 'express';
 import { NextFunction, Request, Response } from 'express';
+import { RequestHandler } from 'express';
 import { verify } from 'jsonwebtoken';
-import { SECRET_KEY } from '@config';
-import { HttpException } from '@exceptions/HttpException';
+
 import { DataStoredInToken /*, RequestWithUser*/ } from '@interfaces/auth.interface';
+import { HttpException } from '@exceptions/HttpException';
+import { SECRET_KEY } from '@config';
 import userModel from '@/models/user.model';
 
 const authMiddleware = (rol = 'user' as string | 'admin' | 'user'): RequestHandler => {

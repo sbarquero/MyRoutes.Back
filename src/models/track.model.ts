@@ -1,4 +1,5 @@
 import { model, Schema, Document } from 'mongoose';
+
 import { Track } from '@/interfaces/track.interface';
 
 const trackSchema: Schema = new Schema({

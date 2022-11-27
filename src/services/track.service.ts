@@ -1,9 +1,9 @@
 import { DOMParser } from '@xmldom/xmldom';
+import { isEmpty } from 'class-validator';
 import * as tj from '@tmcw/togeojson';
 
 import { CreateTrackDto, UpdateTrackDto } from '@/dtos/track.dto';
 import { HttpException } from '@/exceptions/HttpException';
-import { isEmpty } from 'class-validator';
 import { isValidId } from '@/utils/util';
 import { Track, TrackList } from '@/interfaces/track.interface';
 import { User } from '@/interfaces/user.interface';

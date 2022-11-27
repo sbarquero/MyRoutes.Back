@@ -1,4 +1,5 @@
 import { model, Schema, Document } from 'mongoose';
+
 import { RegisterToken } from '@interfaces/registerToken.interface';
 
 const registerTokenSchema: Schema = new Schema({

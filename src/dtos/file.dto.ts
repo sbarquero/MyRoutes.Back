@@ -1,5 +1,5 @@
-import { Transform } from 'class-transformer';
 import { IsDefined, IsString, Length } from 'class-validator';
+import { Transform } from 'class-transformer';
 
 export class FileUploadDto {
   file: Buffer;

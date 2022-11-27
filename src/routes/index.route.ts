@@ -1,4 +1,5 @@
 import { Router } from 'express';
+
 import { Routes } from '@interfaces/routes.interface';
 import IndexController from '@controllers/index.controller';
 

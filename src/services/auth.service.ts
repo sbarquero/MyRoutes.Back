@@ -1,35 +1,36 @@
 import { hash, compare } from 'bcrypt';
+import { randomBytes, randomUUID } from 'crypto';
 import { sign } from 'jsonwebtoken';
+
 import {
-  RECOVER_URL,
-  RECOVER_TOKEN_DURATION,
   ACTIVATION_URL,
+  RECOVER_TOKEN_DURATION,
+  RECOVER_URL,
+  REFRESH_TOKEN_DURATION,
   SECRET_KEY,
   TOKEN_DURATION,
-  REFRESH_TOKEN_DURATION,
 } from '@config';
 import {
+  ActivateResponseDto,
+  ActivateUserDto,
+  AuthResponseDto,
   LoginUserDto,
   LogoutSessionDto,
+  RecoverPasswordDto,
   RefreshTokenDto,
-  AuthResponseDto,
   RegisterUserDto,
   RejectSessionDto,
-  RecoverPasswordDto,
   ResetPasswordDto,
-  ActivateUserDto,
-  ActivateResponseDto,
 } from '@dtos/auth.dto';
-import { HttpException } from '@exceptions/HttpException';
 import { DataStoredInToken, Session } from '@interfaces/auth.interface';
-import { User } from '@/interfaces/user.interface';
-import userModel from '@/models/user.model';
+import { HttpException } from '@exceptions/HttpException';
 import { isEmpty } from '@utils/util';
-import { randomBytes, randomUUID } from 'crypto';
-import MailService from './mail.service';
-import resetTokenModel from '@/models/resetToken.model';
 import { logger } from '@/utils/logger';
+import { User } from '@/interfaces/user.interface';
+import MailService from './mail.service';
 import registerTokenModel from '@/models/registerToken.model';
+import resetTokenModel from '@/models/resetToken.model';
+import userModel from '@/models/user.model';
 
 class AuthService {
   public user = userModel;

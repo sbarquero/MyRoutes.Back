@@ -1,10 +1,11 @@
 import { hash } from 'bcrypt';
+
 import { CreateUserDto, UpdateUserDto } from '@/dtos/user.dto';
 import { HttpException } from '@exceptions/HttpException';
-import { User, UserList } from '@/interfaces/user.interface';
-import userModel from '@/models/user.model';
 import { isEmpty, isValidId } from '@utils/util';
+import { User, UserList } from '@/interfaces/user.interface';
 import AuthService from './auth.service';
+import userModel from '@/models/user.model';
 
 class UserService {
   public user = userModel;
