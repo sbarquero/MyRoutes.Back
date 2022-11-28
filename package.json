@@ -67,7 +67,6 @@
     "node-config": "^0.0.2",
     "node-gyp": "^8.1.0",
     "nodemon": "^2.0.9",
-    "pm2": "^5.2.0",
     "prettier": "^2.3.2",
     "ts-node": "^10.4.0",
     "tsc-alias": "^1.4.1",
