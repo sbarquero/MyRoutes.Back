@@ -60,6 +60,10 @@ npm run dev
 ```
 
 ### API Check
-```http
+```
 http://localhost:3000
 ```
+
+#### Swagger API documentation screenshot
+
+![](doc_img/swagger-doc.png)
