@@ -4,7 +4,7 @@
 
 - [EN English](./README.md)
 
-Esta es la API de mi proyecto MyRoutes.
+Esta es la **API** en **Node.JS** de mi proyecto **MyRoutes**.
 
 ## Configuración del proyecto
 
@@ -14,7 +14,7 @@ Esto instala todos los paquetes necesarios.
 npm install
 ```
 
-### Environment configuration
+### Configuración del entorno
 Tenemos que configurar el archivo de entorno. Podemos ver un ejemplo en el archivo ```.env.example```. 
 ```conf
 # Environment file example

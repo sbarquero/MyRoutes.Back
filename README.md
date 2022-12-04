@@ -2,11 +2,9 @@
 
 ## Translations
 
-- [ES Spanish](./README.es.md)
+- [ES Español](./README.es.md)
 
-This is the API of my MyRoutes project.
-
-This is the API of my MyRoutes project.
+This is the **API** in **Node.JS** of my **MyRoutes** project.
 
 ## Project setup
 
