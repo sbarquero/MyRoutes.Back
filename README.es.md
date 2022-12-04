@@ -1,23 +1,21 @@
 # MyRoutes.Back
 
-## Translations
+## Traducciones
 
-- (ES Spanish)[./README.es.md]
+- (EN English)[./README.md]
 
-This is the API of my MyRoutes project.
+Esta es la API de mi proyecto MyRoutes.
 
-This is the API of my MyRoutes project.
+## Configuración del proyecto
 
-## Project setup
-
-### Dependency installation
-This install all necesary packages.
+### Instalacion de dependencias 
+Esto instala todos los paquetes necesarios.
 ```shell
 npm install
 ```
 
 ### Environment configuration
-We have to configure the environment file. We can see an example in the file ```.env.example```. 
+Tenemos que configurar el archivo de entorno. Podemos ver un ejemplo en el archivo ```.env.example```. 
 ```conf
 # Environment file example
 
@@ -58,18 +56,18 @@ LOG_DIR = ../logs
 ORIGIN = *
 CREDENTIALS = true
 ```
-For local use in development mode the file will be named as `.env.development.local` and for local use in production mode it will be named as `.env.production.local`.
+Para uso local en modo de desarrollo, el archivo se llamará `.env.development.local` y para uso local en modo de producción, se llamará `.env.production.local`.
 
-### Compiles and hot-reloads for development
+### Compilación y recarga en caliente para el desarrollo
 ```shell
 npm run dev
 ```
 
-### API Check
+### Comprobación de API
 ```
 http://localhost:3000
 ```
 
-#### Swagger API documentation screenshot
+#### Captura de pantalla de la documentación de la API de Swagger
 
 ![](doc_img/swagger-doc.png)
