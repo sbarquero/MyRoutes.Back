@@ -2,7 +2,7 @@
 
 ## Traducciones
 
-- (EN English)[./README.md]
+- [EN English](./README.md)
 
 Esta es la API de mi proyecto MyRoutes.
 

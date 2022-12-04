@@ -2,7 +2,7 @@
 
 ## Translations
 
-- (ES Spanish)[./README.es.md]
+- [ES Spanish](./README.es.md)
 
 This is the API of my MyRoutes project.
 
