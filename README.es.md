@@ -6,6 +6,10 @@
 
 Esta es la **API** en **Node.JS** de mi proyecto **MyRoutes**.
 
+## Requerimientos del proyecto
+
+**Nota:** Funciona con `Node JS` versión **16**, pero no con la versión 18.
+
 ## Configuración del proyecto
 
 ### Instalacion de dependencias 
