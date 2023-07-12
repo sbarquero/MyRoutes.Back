@@ -2,6 +2,7 @@ version: '3'
 
 services:
 
+  # MongoDB server
   mongo:
     image: mongo:5.0.18
     restart: always
@@ -17,6 +18,7 @@ services:
     networks:
       - myroutes-net
 
+  # Mongo Express client
   mongo-express:
     image: mongo-express
     restart: always
@@ -29,6 +31,7 @@ services:
     networks:
       - myroutes-net
 
+  # Run Backend MyRoutes image
   myroutes.back:
     image: sbarquero/myroutes.back
     restart: always
