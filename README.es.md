@@ -19,7 +19,8 @@ npm install
 ```
 
 ### Configuración del entorno
-Tenemos que configurar el archivo de entorno. Podemos ver un ejemplo en el archivo ```.env.example```. 
+Tenemos que configurar el archivo de entorno. Podemos ver un ejemplo en el archivo ```.env.example```.
+
 ```conf
 # Environment file example
 
@@ -75,3 +76,40 @@ http://localhost:3000
 #### Captura de pantalla de la documentación de la API de Swagger
 
 ![](doc_img/swagger-doc.png)
+
+## Gestión con Docker
+
+### Crear imagen Docker
+
+Para crear la imagen Docker, se ha empleado el siguiente comando:
+
+```
+docker build -t sbarquero/myroutes.back:1.1.0 .
+docker build -t sbarquero/myroutes.back:latest .
+```
+
+### Subir imagen al repositorio
+
+Para subir la imagen a Docker, se empleado el siguiente comando:
+
+```
+docker push sbarquero/myroutes.back:1.1.0
+docker push sbarquero/myroutes.back:latest
+```
+
+### Puesta en marcha del backend en contenedores Docker
+
+Ejecutando el siguiente comando, se levantan los contenedores necesarios para poner en marcha el backend.
+
+Los contenedores creados son:
+  - `mongodb` - Servidor MongoDB (Puerto 27018)
+  - `mongo-express` - Cliente Mongo Express (Puerto 8081)
+  - `myroutes.back` - Backend de MyRoutes con NodeJS (Puerto 3000)
+
+```
+docker-compose up
+```
+
+### Puesta en marcha del back y front en contenedores Docker
+
+Visite el proyecto [MyRoutes.Docker en Github](https://github.com/sbarquero/MyRoutes.Docker)
