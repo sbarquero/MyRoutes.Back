@@ -46,6 +46,9 @@ class App {
   }
 
   private connectToDatabase() {
+    logger.info(
+      `Conneting to database (env: ${this.env}, debug: ${this.env !== 'production'})`,
+    );
     if (this.env !== 'production') {
       set('debug', true);
     }
