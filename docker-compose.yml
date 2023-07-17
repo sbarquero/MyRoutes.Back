@@ -3,10 +3,11 @@ version: '3'
 services:
 
   # MongoDB server
-  mongo:
+  mongodb:
     image: mongo:5.0.18
     restart: always
     container_name: mongodb
+    hostname: mongodb
     ports:
       - "27018:27017"
     environment:
@@ -27,7 +28,7 @@ services:
     environment:
       ME_CONFIG_MONGODB_ADMINUSERNAME: ${DB_USER}
       ME_CONFIG_MONGODB_ADMINPASSWORD: ${DB_PASSWORD}
-      ME_CONFIG_MONGODB_URL: mongodb://${DB_USER}:${DB_PASSWORD}@mongo:${DB_PORT}/
+      ME_CONFIG_MONGODB_URL: mongodb://${DB_USER}:${DB_PASSWORD}@mongodb:27017/
     networks:
       - myroutes-net
 
@@ -36,6 +37,7 @@ services:
     image: sbarquero/myroutes.back
     restart: always
     container_name: myroutes.back
+    hostname: myroutes-back
     ports:
       - ${PORT}:${PORT}
     env_file:
@@ -46,7 +48,7 @@ services:
 
 volumes:
   mongo-db:
-    name: myroutes-db
+    name: myroutes-mongo-db
     external: false
   mongo-conf:
     name: myroutes-mongo-conf
