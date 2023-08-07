@@ -2,6 +2,7 @@ import {
   IsBoolean,
   IsDate,
   IsDefined,
+  IsOptional,
   IsString,
   Length,
   MinLength,
@@ -40,6 +41,7 @@ export class CreateTrackDto {
   @IsDefined()
   public createAt: Date;
 
+  @IsOptional()
   file: Buffer;
 }
 
