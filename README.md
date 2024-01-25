@@ -93,7 +93,7 @@ docker build -t sbarquero/myroutes.back:latest .
 To upload the image to Docker, the following command was used:
 
 ```
-docker push sbarquero/myroutes.back:1.1.0
+docker push sbarquero/myroutes.back:1.1.1
 docker push sbarquero/myroutes.back:latest
 ```
 
