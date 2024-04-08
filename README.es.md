@@ -8,7 +8,7 @@ Esta es la **API** en **Node.JS** de mi proyecto **MyRoutes**.
 
 ## Requerimientos del proyecto
 
-**Nota:** Funciona con `Node JS` versión **16**, pero no con la versión 18.
+**Nota:** Funciona con `Node JS` versión **16.20.2**, **20.11.1**, pero no con la versión 18.
 
 ## Configuración del proyecto
 
@@ -84,7 +84,7 @@ http://localhost:3000
 Para crear la imagen Docker, se ha empleado el siguiente comando:
 
 ```
-docker build -t sbarquero/myroutes.back:1.1.1 .
+docker build -t sbarquero/myroutes.back:1.1.3 .
 docker build -t sbarquero/myroutes.back:latest .
 ```
 
@@ -93,7 +93,7 @@ docker build -t sbarquero/myroutes.back:latest .
 Para subir la imagen a Docker, se empleado el siguiente comando:
 
 ```
-docker push sbarquero/myroutes.back:1.1.1
+docker push sbarquero/myroutes.back:1.1.3
 docker push sbarquero/myroutes.back:latest
 ```
 
