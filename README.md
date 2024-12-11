@@ -84,7 +84,7 @@ http://localhost:3000
 To create the Docker image, the following command has been used:
 
 ```
-docker build -t sbarquero/myroutes.back:1.1.8 .
+docker build -t sbarquero/myroutes.back:1.1.9 .
 docker build -t sbarquero/myroutes.back:latest .
 ```
 
@@ -93,7 +93,7 @@ docker build -t sbarquero/myroutes.back:latest .
 To upload the image to Docker, the following command was used:
 
 ```
-docker push sbarquero/myroutes.back:1.1.8
+docker push sbarquero/myroutes.back:1.1.9
 docker push sbarquero/myroutes.back:latest
 ```
 
